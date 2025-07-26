@@ -1,0 +1,1 @@
+A Flask-based Fintech alert system where users choose between stock or IPO alerts, select preferences, and receive real-time notifications via Telegram, Email, or Web. MVP includes Google OAuth, PostgreSQL, and basic trading logic.
