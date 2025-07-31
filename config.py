@@ -1,5 +1,6 @@
-import os
-
+import os 
+from dotenv import load_dotenv
 class Config:
-    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:prthm08@localhost:5432/fintech'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SECRET_KEY = 'your-secret-key'
