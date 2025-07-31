@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Fintech</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            padding: 2rem 1rem;
+        }
+
+        .login-container {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 
+                0 10px 25px rgba(0, 0, 0, 0.1),
+                0 20px 48px rgba(0, 0, 0, 0.1),
+                0 1px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            
+            /* Animation properties */
+            animation: cardAppear 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            transform-origin: center;
+        }
+
+        @keyframes cardAppear {
+            0% {
+                width: 2px;
+                height: 2px;
+                border-radius: 50%;
+                opacity: 0;
+                transform: scale(0);
+                box-shadow: none;
+            }
+            20% {
+                width: 60%;
+                height: 3px;
+                border-radius: 2px;
+                opacity: 0.4;
+                transform: scale(1);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            }
+            40% {
+                width: 100%;
+                height: 6px;
+                border-radius: 3px;
+                opacity: 0.6;
+                transform: scale(1);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            }
+            60% {
+                width: 100%;
+                height: 40%;
+                border-radius: 8px;
+                opacity: 0.8;
+                transform: scale(1);
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+            }
+            80% {
+                width: 100%;
+                height: 80%;
+                border-radius: 16px;
+                opacity: 0.95;
+                transform: scale(1);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            }
+            100% {
+                width: 100%;
+                height: auto;
+                border-radius: 24px;
+                opacity: 1;
+                transform: scale(1);
+                box-shadow: 
+                    0 10px 25px rgba(0, 0, 0, 0.1),
+                    0 20px 48px rgba(0, 0, 0, 0.1),
+                    0 1px 4px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        .content-wrapper {
+            opacity: 0;
+            animation: contentFadeIn 1s ease-out 1.8s forwards;
+        }
+
+        @keyframes contentFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 24px 24px 0 0;
+            animation: topBarGrow 0.8s ease-out 2.2s forwards;
+            transform: scaleX(0);
+            transform-origin: left;
+        }
+
+        @keyframes topBarGrow {
+            0% {
+                transform: scaleX(0);
+                opacity: 0;
+            }
+            100% {
+                transform: scaleX(1);
+                opacity: 1;
+            }
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: logoAppear 0.8s ease-out 2.4s forwards;
+        }
+
+        @keyframes logoAppear {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+            font-size: 2rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+        }
+
+        .logo:hover {
+            transform: scale(1.05) rotate(5deg);
+            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.4);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        .demo-credentials {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(5, 150, 105, 0.05));
+            border: 2px solid rgba(16, 185, 129, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            color: #065f46;
+            opacity: 0;
+            animation: demoAppear 0.6s ease-out 2.6s forwards;
+        }
+
+        @keyframes demoAppear {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .demo-credentials strong {
+            display: block;
+            margin-bottom: 0.75rem;
+            color: #047857;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .form-group:nth-child(1) {
+            animation: formGroupAppear 0.6s ease-out 2.8s forwards;
+        }
+
+        .form-group:nth-child(2) {
+            animation: formGroupAppear 0.6s ease-out 3s forwards;
+        }
+
+        @keyframes formGroupAppear {
+            0% {
+                opacity: 0;
+                transform: translateY(25px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 0.75rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 1.25rem 1.25rem 1.25rem 3.5rem;
+            border: 2px solid #f1f5f9;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            background: #fff;
+            transition: all 0.3s ease;
+            outline: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: #667eea;
+            box-shadow: 
+                0 0 0 3px rgba(102, 126, 234, 0.1),
+                0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1.3rem;
+            pointer-events: none;
+            transition: color 0.3s ease;
+        }
+
+        input:focus + .input-icon {
+            color: #667eea;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: linkAppear 0.6s ease-out 3.2s forwards;
+        }
+
+        @keyframes linkAppear {
+            0% {
+                opacity: 0;
+                transform: translateX(20px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        .forgot-password a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .forgot-password a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1.25rem 2rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            animation: buttonAppear 0.6s ease-out 3.4s forwards;
+        }
+
+        @keyframes buttonAppear {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .login-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(-2px);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 2.5rem 0;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            opacity: 0;
+            animation: dividerAppear 0.6s ease-out 3.6s forwards;
+        }
+
+        @keyframes dividerAppear {
+            0% {
+                opacity: 0;
+                transform: scaleX(0.5) translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: scaleX(1) translateY(0);
+            }
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+        }
+
+        .divider span {
+            padding: 0 1.5rem;
+            background: white;
+            font-weight: 600;
+        }
+
+        .signup-link {
+            text-align: center;
+            color: #64748b;
+            font-size: 1rem;
+            opacity: 0;
+            animation: signupAppear 0.6s ease-out 3.8s forwards;
+        }
+
+        @keyframes signupAppear {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .signup-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+
+        .signup-link a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .floating-dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-dot:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-dot:nth-child(2) {
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .floating-dot:nth-child(3) {
+            bottom: 30%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-15px) rotate(180deg);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 2rem 1.5rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .logo {
+                width: 60px;
+                height: 60px;
+                font-size: 1.7rem;
+            }
+            
+            input[type="email"],
+            input[type="password"] {
+                padding: 1rem 1rem 1rem 3rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="floating-elements">
+            <div class="floating-dot"></div>
+            <div class="floating-dot"></div>
+            <div class="floating-dot"></div>
+        </div>
+        
+        <div class="content-wrapper">
+            <div class="logo-section">
+                <div class="logo" id="logoClick">F</div>
+                <h1>Welcome Back</h1>
+                <p class="subtitle">Sign in to your Fintech account</p>
+            </div>
+
+            <div class="demo-credentials">
+                <strong>🚀 Demo Credentials:</strong>
+                Email: demo@fintech.com<br>
+                Password: demo123
+            </div>
+
+            <form action="{{ url_for('main.index') }}" method="POST" id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                        <span class="input-icon">✉</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                        <span class="input-icon">🔒</span>
+                    </div>
+                </div>
+
+                <div class="forgot-password">
+                    <a href="#" id="forgotLink">Forgot your password?</a>
+                </div>
+
+                <button type="submit" class="login-btn" id="loginBtn">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>or</span>
+            </div>
+
+            <div class="signup-link">
+                Don't have an account? <a href="#" id="signupLink">Sign up here</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form validation and submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            
+            // Basic validation
+            if (!email || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // Simulate login process
+            loginBtn.innerHTML = '⏳ Signing In...';
+            loginBtn.disabled = true;
+            loginBtn.style.background = 'linear-gradient(135deg, #94a3b8, #64748b)';
+            
+            setTimeout(() => {
+                // Check demo credentials
+                if (email === 'demo@fintech.com' && password === 'demo123') {
+                    loginBtn.innerHTML = '✓ Login Successful!';
+                    loginBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                    
+                    // Add success animation
+                    createSuccessParticles();
+                    
+                    setTimeout(() => {
+                        loginBtn.innerHTML = '🚀 Redirecting...';
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1000);
+                    }, 1500);
+                } else {
+                    loginBtn.innerHTML = '✗ Invalid Credentials';
+                    loginBtn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                    
+                    // Shake animation
+                    loginBtn.style.animation = 'shake 0.5s ease-in-out';
+                    
+                    setTimeout(() => {
+                        loginBtn.innerHTML = 'Sign In';
+                        loginBtn.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+                        loginBtn.style.animation = '';
+                        loginBtn.disabled = false;
+                    }, 2500);
+                }
+            }, 2000);
+        });
+
+        // Add input focus effects
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.parentElement.style.transform = 'translateY(-3px)';
+                this.parentElement.parentElement.style.transition = 'all 0.3s ease';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Handle forgot password
+        document.getElementById('forgotLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Password reset functionality would be implemented here.\n\nFor demo, use:\nEmail: demo@fintech.com\nPassword: demo123');
+        });
+
+        // Handle signup link
+        document.getElementById('signupLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Signup page would be implemented here.\n\nFor now, use the demo credentials provided above.');
+        });
+
+        // Auto-fill demo credentials on logo click
+        document.getElementById('logoClick').addEventListener('click', function() {
+            document.getElementById('email').value = 'demo@fintech.com';
+            document.getElementById('password').value = 'demo123';
+            
+            // Add visual feedback
+            this.style.transform = 'scale(1.15) rotate(15deg)';
+            this.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+            
+            setTimeout(() => {
+                this.style.transform = 'scale(1) rotate(0deg)';
+                this.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+            }, 500);
+            
+            // Focus on submit button
+            setTimeout(() => {
+                document.getElementById('loginBtn').focus();
+            }, 600);
+        });
+
+        // Success particles animation
+        function createSuccessParticles() {
+            for (let i = 0; i < 12; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.style.position = 'fixed';
+                    particle.style.width = '8px';
+                    particle.style.height = '8px';
+                    particle.style.background = `linear-gradient(135deg, #10b981, #059669)`;
+                    particle.style.borderRadius = '50%';
+                    particle.style.left = '50%';
+                    particle.style.top = '50%';
+                    particle.style.pointerEvents = 'none';
+                    particle.style.animation = `particleExplode 2s ease-out forwards`;
+                    particle.style.transform = `rotate(${i * 30}deg)`;
+                    
+                    document.body.appendChild(particle);
+                    
+                    setTimeout(() => {
+                        particle.remove();
+                    }, 2000);
+                }, i * 50);
+            }
+        }
+
+        // Dynamic CSS for animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-10px); }
+                75% { transform: translateX(10px); }
+            }
+            
+            @keyframes particleExplode {
+                0% {
+                    transform: translate(-50%, -50%) translateY(0) scale(1);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translate(-50%, -50%) translateY(-100px) scale(0);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Add typing effect to placeholder text
+        const inputs = document.querySelectorAll('input[type="email"], input[type="password"]');
+        inputs.forEach(input => {
+            const originalPlaceholder = input.placeholder;
+            
+            input.addEventListener('focus', function() {
+                if (this.value === '') {
+                    this.placeholder = '';
+                    typeWriter(this, originalPlaceholder, 0);
+                }
+            });
+            
+            input.addEventListener('blur', function() {
+                this.placeholder = originalPlaceholder;
+            });
+        });
+
+        function typeWriter(element, text, i) {
+            if (i < text.length && document.activeElement === element) {
+                element.placeholder += text.charAt(i);
+                setTimeout(() => typeWriter(element, text, i + 1), 100);
+            }
+        }
+    </script>
+</body>
+</html>

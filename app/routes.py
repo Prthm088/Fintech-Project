@@ -1,13 +1,20 @@
-from flask import request,redirect,url_for,render_template,Blueprint
+from flask import request,redirect,url_for,render_template,Blueprint,session
 from .models import Subscription
 from . import db
 
 main = Blueprint('main',__name__)
 
-@main.route("/")
-def index():
-    return render_template('index.html')
+@main.route("/",methods=['GET'])
+def login():
+    if request.method=='GET':
+        return render_template("login.html")
 
+
+@main.route("/index.html",methods=['GET'])
+def index():
+    if request.method == 'GET':
+        return render_template('index.html')
+ 
 @main.route("/stocks",methods=['GET','POST'])
 def stocks():
     if request.method == 'GET':
