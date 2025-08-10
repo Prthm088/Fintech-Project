@@ -1,13 +1,33 @@
 from flask import request,redirect,url_for,render_template,Blueprint,session
-from .models import Subscription
+from .models import Subscription,Users
 from . import db
+from werkzeug.security import generate_password_hash
 
 main = Blueprint('main',__name__)
 
-@main.route("/",methods=['GET'])
-def login():
+@main.route("/signup",methods=['GET','POST'])
+def signup():
     if request.method=='GET':
-        return render_template("login.html")
+        return render_template("sign_up.html")
+    else:
+        first_name = str(request.form['firstName'])
+        last_name = str(request.form['lastName'])
+        email = str(request.form['email'])
+        password = str(request.form['password'])
+        hashed_password = generate_password_hash(password)
+
+        new_user = Users(first_name=first_name,
+                         last_name=last_name,
+                         email=email,
+                         password=hashed_password)
+        
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect(url_for('main.signup_success',first_name=first_name))
+    
+@main.route("/signup_success/<first_name>")
+def signup_success(first_name):
+    return render_template("signup_success.html",first_name=first_name)
 
 
 @main.route("/index.html",methods=['GET'])

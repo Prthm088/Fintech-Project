@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Signup Successful</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .success-container {
+            background: #fff;
+            padding: 2rem 3rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        .success-container h1 {
+            color: #27ae60;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{first_name}}</h1>
+    <div class="success-container">
+        <h1>Signup Successful!</h1>
+        <p>Your account has been created successfully.</p>
+        <a href="/login">Go to Login</a>
+    </div>
+</body>
+</html>
