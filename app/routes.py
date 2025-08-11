@@ -1,10 +1,11 @@
 from flask import request,redirect,url_for,render_template,Blueprint,session
 from .models import Subscription,Users
 from . import db
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash,check_password_hash
 
 main = Blueprint('main',__name__)
 
+## Create Account Setup 
 @main.route("/signup",methods=['GET','POST'])
 def signup():
     if request.method=='GET':
@@ -30,6 +31,26 @@ def signup_success(first_name):
     return render_template("signup_success.html",first_name=first_name)
 
 
+## User Login Setup
+@main.route("/login",methods=['GET','POST'])
+def login():
+    if request.method=='GET':
+        return render_template("login.html")
+    else:
+        email = str(request.form['email'])
+        password = str(request.form['password'])
+
+        ## Get the User by email
+        user = Users.query.filter_by(email=email).first()
+        # Check password hash
+        if user and check_password_hash(user.password, password):
+            return redirect(url_for("main.index"))  # your dashboard route
+        else:
+            return redirect(url_for("main.login"))
+
+
+
+
 @main.route("/index.html",methods=['GET'])
 def index():
     if request.method == 'GET':
@@ -51,7 +72,6 @@ def stocks():
 @main.route("/success/<stocks>/<alert>",methods=['GET'])
 def success(stocks,alert):
     return render_template('success.html',stocks=stocks,alert=alert)
-
 
 
 @main.route("/ipo",methods=['GET'])
