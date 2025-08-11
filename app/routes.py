@@ -32,7 +32,7 @@ def signup_success(first_name):
 
 
 ## User Login Setup
-@main.route("/login",methods=['GET','POST'])
+@main.route("/",methods=['GET','POST'])
 def login():
     if request.method=='GET':
         return render_template("login.html")
