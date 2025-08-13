@@ -5,6 +5,14 @@ from werkzeug.security import generate_password_hash,check_password_hash
 
 main = Blueprint('main',__name__)
 
+
+
+## Landing Page
+@main.route("/")
+def landingPage():
+    return render_template('landing_page.html')
+
+
 ## Create Account Setup 
 @main.route("/signup",methods=['GET','POST'])
 def signup():
@@ -32,7 +40,7 @@ def signup_success(first_name):
 
 
 ## User Login Setup
-@main.route("/",methods=['GET','POST'])
+@main.route("/login",methods=['GET','POST'])
 def login():
     if request.method=='GET':
         return render_template("login.html")
@@ -47,8 +55,6 @@ def login():
             return redirect(url_for("main.index"))  # your dashboard route
         else:
             return redirect(url_for("main.login"))
-
-
 
 
 @main.route("/index.html",methods=['GET'])
