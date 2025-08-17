@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPO Alerts</title>
+    <title>IPO Alerts - Finser</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=DM+Sans:wght@400;700&display=swap" as="style">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,39 +16,58 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            background-color: #1D223A;
+            background-image: url('/static/images/BG01.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: white;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #333;
-            padding: 2rem 1rem;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(29, 34, 58, 0.8);
+            pointer-events: none;
+            z-index: -1;
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 3rem 2rem;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(15px);
             max-width: 600px;
             width: 100%;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
         }
 
         .back-link {
             display: inline-flex;
             align-items: center;
-            color: #667eea;
+            color: #3b82f6;
             text-decoration: none;
+            font-family: 'Inter', sans-serif;
             font-weight: 500;
             margin-bottom: 2rem;
             transition: color 0.3s ease;
         }
 
         .back-link:hover {
-            color: #764ba2;
+            color: #10b981;
         }
 
         .back-link::before {
@@ -54,12 +77,10 @@
         }
 
         h1 {
+            font-family: 'DM Sans', sans-serif;
             font-size: 2.2rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-weight: bold;
+            color: #10b981;
             margin-bottom: 2rem;
             text-align: center;
             letter-spacing: -0.02em;
@@ -70,20 +91,20 @@
         }
 
         .form-section h2 {
+            font-family: 'DM Sans', sans-serif;
             font-size: 1.3rem;
             font-weight: 600;
-            color: #1e293b;
+            color: white;
             margin-bottom: 1rem;
         }
 
         .description {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-            border: 1px solid rgba(102, 126, 234, 0.2);
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.2);
             border-radius: 12px;
             padding: 1.5rem;
             margin-bottom: 2rem;
             position: relative;
-            overflow: hidden;
         }
 
         .description::before {
@@ -96,7 +117,8 @@
         }
 
         .description p {
-            color: #475569;
+            color: #d1d5db;
+            font-family: 'Inter', sans-serif;
             font-size: 1rem;
             line-height: 1.6;
             margin: 0;
@@ -112,8 +134,8 @@
             display: flex;
             align-items: center;
             padding: 0.75rem 1rem;
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.15);
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -121,13 +143,13 @@
         }
 
         .checkbox-item:hover {
-            background: #f1f5f9;
-            border-color: #cbd5e1;
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.25);
         }
 
         .checkbox-item.selected {
-            background: rgba(102, 126, 234, 0.1);
-            border-color: #667eea;
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.3);
         }
 
         .checkbox-item::before {
@@ -139,7 +161,7 @@
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            background: #667eea;
+            background: #10b981;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
@@ -153,25 +175,27 @@
             height: 20px;
             margin-right: 0.75rem;
             cursor: pointer;
-            accent-color: #667eea;
+            accent-color: #10b981;
         }
 
         .checkbox-label {
+            font-family: 'Inter', sans-serif;
             font-size: 1rem;
             font-weight: 500;
-            color: #1e293b;
+            color: white;
             cursor: pointer;
             flex: 1;
         }
 
         .submit-btn {
             width: 100%;
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, #10b981, #059669);
+            padding: 15px;
+            background: linear-gradient(135deg, #10b981, #3b82f6);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             font-size: 1.1rem;
+            font-family: 'Inter', sans-serif;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -180,20 +204,9 @@
             overflow: hidden;
         }
 
-        .submit-btn::before {
-            content: '✓';
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 1.2rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
         .submit-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
         }
 
         .submit-btn:active {
@@ -201,19 +214,27 @@
         }
 
         .feature-highlight {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            background: linear-gradient(135deg, #10b981, #3b82f6);
             color: white;
             padding: 1rem;
             border-radius: 8px;
             margin-bottom: 1.5rem;
             text-align: center;
+            font-family: 'Inter', sans-serif;
             font-weight: 600;
             font-size: 0.9rem;
         }
 
+        @media (max-width: 768px) {
+            body {
+                background-attachment: scroll;
+            }
+        }
+
         @media (max-width: 480px) {
             .container {
-                padding: 2rem 1.5rem;
+                padding: 30px 25px;
+                margin: 10px;
             }
             
             h1 {
@@ -289,7 +310,7 @@
             });
         });
 
-        // Add submit button animation
+        // Add submit button animation and validation
         document.querySelector('.submit-btn').addEventListener('click', function(e) {
             // Check if at least one checkbox is selected
             const checkboxes = document.querySelectorAll('input[type="checkbox"]');
@@ -300,16 +321,6 @@
                 alert('Please select at least one alert method');
                 return;
             }
-            
-            // Add success animation
-            this.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-            this.innerHTML = '✓ Subscribed!';
-            
-            // Reset after 2 seconds (in real app, this would redirect)
-            setTimeout(() => {
-                this.innerHTML = 'Subscribe to IPO Alerts';
-                this.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-            }, 2000);
         });
     </script>
 </body>
