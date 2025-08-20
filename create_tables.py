@@ -1,5 +1,5 @@
 from app import create_app,db
-from app.models import Users
+from app.models import Users,Subscription
 
 app = create_app()
 

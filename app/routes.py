@@ -1,4 +1,4 @@
-from flask import request,redirect,url_for,render_template,Blueprint,session
+from flask import request,redirect,url_for,render_template,Blueprint,session,flash
 from .models import Subscription,Users
 from . import db
 from werkzeug.security import generate_password_hash,check_password_hash
@@ -52,6 +52,7 @@ def login():
         user = Users.query.filter_by(email=email).first()
         # Check password hash
         if user and check_password_hash(user.password, password):
+            session['user_id'] = user.id
             return redirect(url_for("main.index"))  # your dashboard route
         else:
             return redirect(url_for("main.login"))
@@ -67,12 +68,23 @@ def stocks():
     if request.method == 'GET':
         return render_template('stock.html')
     else:
+        user_id = session.get('user_id')
+        if not user_id:
+            flash("Please log in first.", "danger")
+            return redirect(url_for('main.login'))
+        
         stocks = request.form.get('stocks')
         alert = request.form.get('alert_method')
-        new_sub = Subscription(stock_name=stocks, alert_type=alert)
+    
+        new_sub = Subscription(
+            user_id=user_id,
+            alert_type="stock",
+            stock_name = stocks,
+            notification_method = alert
+            )
         db.session.add(new_sub)
         db.session.commit()
-
+        flash("Subscription saved successfully!", "success")
         return redirect(url_for('main.success',stocks=stocks,alert=alert))
 
 @main.route("/success/<stocks>/<alert>",methods=['GET'])
