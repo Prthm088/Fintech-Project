@@ -3,10 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Success</title>
+    <title>Success - Finser</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=DM+Sans:wght@400;700&display=swap" as="style">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1D223A;
+            background-image: url('/static/images/BG01.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(29, 34, 58, 0.8);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(15px);
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            text-align: center;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 2rem;
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            }
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            }
+        }
+
+        h1 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #10b981;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .success-message {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            color: #d1d5db;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .details-card {
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.15);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .detail-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-label {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            color: #10b981;
+            margin-right: 0.75rem;
+            min-width: 120px;
+        }
+
+        .detail-value {
+            font-family: 'Inter', sans-serif;
+            color: white;
+            font-weight: 500;
+        }
+
+        .back-button {
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .back-button:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                background-attachment: scroll;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 25px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .success-message {
+                font-size: 1rem;
+            }
+
+            .success-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 2rem;
+            }
+
+            .details-card {
+                padding: 1.5rem;
+            }
+
+            .detail-row {
+                font-size: 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+                margin-bottom: 1.5rem;
+            }
+
+            .detail-label {
+                margin-bottom: 0.25rem;
+                margin-right: 0;
+                min-width: auto;
+            }
+
+            .back-button {
+                padding: 0.875rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>You have selected alert for {{stocks}} and you will recieve alerts through {{alert}}</h1>
-    
+    <div class="container">
+        <div class="success-icon">
+            ✓
+        </div>
+        
+        <h1>SUCCESS!</h1>
+        <p class="success-message">Your alert preferences have been saved successfully. You're all set to receive notifications!</p>
+        
+        <div class="details-card">
+            <div class="detail-row">
+                <span class="detail-label">Selected:</span>
+                <span class="detail-value">{{stocks}}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Alert Method:</span>
+                <span class="detail-value">{{alert}}</span>
+            </div>
+        </div>
+        
+        <a href="{{ url_for('main.index') }}" class="back-button">Set Up More Alerts</a>
+    </div>
 </body>
 </html>
