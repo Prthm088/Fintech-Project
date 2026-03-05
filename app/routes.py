@@ -10,7 +10,7 @@ main = Blueprint('main',__name__)
 ## Landing Page
 @main.route("/")
 def landingPage():
-    return render_template('landing_page.html')
+    return render_template('dashboard.html')
 
 
 ## Create Account Setup 

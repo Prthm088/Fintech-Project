@@ -1,7 +1,6 @@
 from . import db
 from datetime import datetime
 
-from datetime import datetime
 from app import db
 
 class Subscription(db.Model):

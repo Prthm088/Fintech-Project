@@ -6,6 +6,11 @@ __pycache__/
 # C extensions
 *.so
 
+# Other Files
+fintech_backup.sql
+fintech_backup1.backup
+Google Oauth/
+
 # Distribution / packaging
 .Python
 build/
@@ -144,6 +149,7 @@ ENV/
 env.bak/
 venv.bak/
 fintechenv/
+fintechenv1/
 
 # Spyder project settings
 .spyderproject
