@@ -1,968 +1,1543 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
+
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>MarketPulse — Smart Trading Intelligence</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      fontFamily: {
-        display: ['Bricolage Grotesque','sans-serif'],
-        body:    ['Plus Jakarta Sans','sans-serif'],
-        mono:    ['JetBrains Mono','monospace'],
-      },
-      colors: {
-        brand:  { DEFAULT:'#0057FF', light:'#EEF3FF', dark:'#0040CC' },
-        ink:    { DEFAULT:'#0C1220', muted:'#64748B', subtle:'#94A3B8' },
-        surface:{ DEFAULT:'#FFFFFF', bg:'#F4F7FB', border:'#E2E8F2' },
-        bull:   { DEFAULT:'#059669', light:'#ECFDF5' },
-        bear:   { DEFAULT:'#DC2626', light:'#FEF2F2' },
-        gold:   '#F59E0B',
-      },
-      boxShadow:{
-        card:'0 1px 3px rgba(0,0,0,.05),0 1px 2px rgba(0,0,0,.04)',
-        lift:'0 8px 24px rgba(0,0,0,.09)',
-        glow:'0 4px 20px rgba(0,87,255,.25)',
-        modal:'0 24px 80px rgba(0,0,0,.25)',
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EdgeTrade — Smart Trading Intelligence</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Bricolage Grotesque', 'sans-serif'],
+            body: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: { DEFAULT: '#0057FF', light: '#EEF3FF', dark: '#0040CC' },
+            ink: { DEFAULT: '#0C1220', muted: '#64748B', subtle: '#94A3B8' },
+            surface: { DEFAULT: '#FFFFFF', bg: '#F4F7FB', border: '#E2E8F2' },
+            bull: { DEFAULT: '#059669', light: '#ECFDF5' },
+            bear: { DEFAULT: '#DC2626', light: '#FEF2F2' },
+            gold: '#F59E0B',
+          },
+          boxShadow: {
+            card: '0 1px 3px rgba(0,0,0,.05),0 1px 2px rgba(0,0,0,.04)',
+            lift: '0 8px 24px rgba(0,0,0,.09)',
+            glow: '0 4px 20px rgba(0,87,255,.25)',
+            modal: '0 24px 80px rgba(0,0,0,.25)',
+          }
+        }
       }
     }
-  }
-}
-</script>
-<style>
-  body{font-family:'Plus Jakarta Sans',sans-serif;}
+  </script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
 
-  /* ticker */
-  .ticker-wrap{overflow:hidden;white-space:nowrap;}
-  .ticker-track{display:inline-flex;gap:56px;animation:ticker 30s linear infinite;}
-  .ticker-track:hover{animation-play-state:paused;}
-  @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    /* ticker */
+    .ticker-wrap {
+      overflow: hidden;
+      white-space: nowrap;
+    }
 
-  /* reveal */
-  .reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease;}
-  .reveal.in{opacity:1;transform:none;}
+    .ticker-track {
+      display: inline-flex;
+      gap: 56px;
+      animation: ticker 30s linear infinite;
+    }
 
-  /* card lift */
-  .clift{transition:box-shadow .2s,transform .2s;}
-  .clift:hover{box-shadow:0 8px 24px rgba(0,0,0,.09);transform:translateY(-2px);}
+    .ticker-track:hover {
+      animation-play-state: paused;
+    }
 
-  /* index card accent bar */
-  .idx-card{position:relative;overflow:hidden;}
-  .idx-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;transform:scaleX(0);transform-origin:left;transition:transform .28s ease;}
-  .bull-bar::after{background:#059669;}
-  .bear-bar::after{background:#DC2626;}
-  .idx-card:hover::after{transform:scaleX(1);}
+    @keyframes ticker {
+      from {
+        transform: translateX(0)
+      }
 
-  /* why icon */
-  .why-card:hover .wicon{background:#0057FF!important;}
-  .why-card:hover .wicon svg{stroke:white!important;}
-  .wicon{transition:background .2s;}
-  .wicon svg{transition:stroke .2s;}
+      to {
+        transform: translateX(-50%)
+      }
+    }
 
-  /* live dot */
-  @keyframes livepulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.5)}}
-  .live-dot{animation:livepulse 2s ease-in-out infinite;}
+    /* reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .55s ease, transform .55s ease;
+    }
 
-  /* input focus */
-  input:focus,textarea:focus{outline:none;border-color:#0057FF!important;box-shadow:0 0 0 3px rgba(0,87,255,.12);}
+    .reveal.in {
+      opacity: 1;
+      transform: none;
+    }
 
-  /* ── MODAL ─────────────────────────────── */
-  #authModal{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;}
-  #authModal.open{display:flex;}
+    /* card lift */
+    .clift {
+      transition: box-shadow .2s, transform .2s;
+    }
 
-  /* modal panel slide-in */
-  #authPanel{animation:slideUp .3s ease;}
-  @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+    .clift:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .09);
+      transform: translateY(-2px);
+    }
 
-  /* OTP step */
-  #otpStep{display:none;}
-  #otpStep.visible{display:block;}
-  #phoneStep.hidden-step{display:none;}
+    /* index card accent bar */
+    .idx-card {
+      position: relative;
+      overflow: hidden;
+    }
 
-  /* OTP input row */
-  .otp-input{width:44px;height:52px;text-align:center;border:1.5px solid #E2E8F2;border-radius:10px;font-size:20px;font-weight:600;font-family:'JetBrains Mono',monospace;color:#0C1220;transition:border-color .18s;}
-  .otp-input:focus{border-color:#0057FF;box-shadow:0 0 0 3px rgba(0,87,255,.12);outline:none;}
+    .idx-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .28s ease;
+    }
 
-  /* stock row hover */
-  .mkt-row{transition:background .15s;}
-  .mkt-row:hover{background:#F8FAFD;}
+    .bull-bar::after {
+      background: #059669;
+    }
 
-  /* signup tab */
-  .auth-tab{cursor:pointer;padding:8px 20px;border-radius:8px;font-size:14px;font-weight:600;transition:all .18s;color:#64748B;}
-  .auth-tab.active{background:#0057FF;color:#fff;}
+    .bear-bar::after {
+      background: #DC2626;
+    }
 
-  /* hero video: ORB toast animation */
-  @keyframes toastPop{
-    0%,100%{opacity:0;transform:translateY(-8px);}
-    10%,85%{opacity:1;transform:translateY(0);}
-  }
-</style>
+    .idx-card:hover::after {
+      transform: scaleX(1);
+    }
+
+    /* why icon */
+    .why-card:hover .wicon {
+      background: #0057FF !important;
+    }
+
+    .why-card:hover .wicon svg {
+      stroke: white !important;
+    }
+
+    .wicon {
+      transition: background .2s;
+    }
+
+    .wicon svg {
+      transition: stroke .2s;
+    }
+
+    /* live dot */
+    @keyframes livepulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: .35;
+        transform: scale(1.5)
+      }
+    }
+
+    .live-dot {
+      animation: livepulse 2s ease-in-out infinite;
+    }
+
+    /* input focus */
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #0057FF !important;
+      box-shadow: 0 0 0 3px rgba(0, 87, 255, .12);
+    }
+
+    /* ── MODAL ─────────────────────────────── */
+    #authModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(0, 0, 0, .55);
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+    }
+
+    #authModal.open {
+      display: flex;
+    }
+
+    /* modal panel slide-in */
+    #authPanel {
+      animation: slideUp .3s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    /* OTP step */
+    #otpStep {
+      display: none;
+    }
+
+    #otpStep.visible {
+      display: block;
+    }
+
+    #phoneStep.hidden-step {
+      display: none;
+    }
+
+    /* OTP input row */
+    .otp-input {
+      width: 44px;
+      height: 52px;
+      text-align: center;
+      border: 1.5px solid #E2E8F2;
+      border-radius: 10px;
+      font-size: 20px;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      color: #0C1220;
+      transition: border-color .18s;
+    }
+
+    .otp-input:focus {
+      border-color: #0057FF;
+      box-shadow: 0 0 0 3px rgba(0, 87, 255, .12);
+      outline: none;
+    }
+
+    /* stock row hover */
+    .mkt-row {
+      transition: background .15s;
+    }
+
+    .mkt-row:hover {
+      background: #F8FAFD;
+    }
+
+    /* signup tab */
+    .auth-tab {
+      cursor: pointer;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all .18s;
+      color: #64748B;
+    }
+
+    .auth-tab.active {
+      background: #0057FF;
+      color: #fff;
+    }
+
+    /* hero video: ORB toast animation */
+    @keyframes toastPop {
+
+      0%,
+      100% {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+
+      10%,
+      85% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
 </head>
+
 <body class="bg-surface-bg text-ink antialiased">
 
-<!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
-<header class="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-surface-border h-16">
-  <div class="max-w-7xl mx-auto px-5 h-full flex items-center justify-between gap-6">
-    <a href="#" class="flex items-center gap-2.5 shrink-0">
-      <div class="w-8 h-8 bg-brand rounded-lg flex items-center justify-center" style="box-shadow:0 4px 14px rgba(0,87,255,.3)">
-        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="1,14 6,8 10,12 14,5 18,9"/><circle cx="18" cy="4" r="2.2" fill="white" stroke="none"/>
-        </svg>
+  <!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
+  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-surface-border h-16">
+    <div class="max-w-7xl mx-auto px-5 h-full flex items-center justify-between gap-6">
+      <a href="#" class="flex items-center gap-2.5 shrink-0">
+        <div class="w-8 h-8 bg-brand rounded-lg flex items-center justify-center"
+          style="box-shadow:0 4px 14px rgba(0,87,255,.3)">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1,14 6,8 10,12 14,5 18,9" />
+            <circle cx="18" cy="4" r="2.2" fill="white" stroke="none" />
+          </svg>
+        </div>
+        <span
+          style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:800;color:#0C1220;letter-spacing:-.02em">Edge<span
+            style="color:#0057FF">Trade</span></span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-0.5">
+        <a href="#dashboard"
+          class="text-[13.5px] font-semibold text-brand bg-brand-light px-4 py-1.5 rounded-lg">Dashboard</a>
+        <a href="#stocks"
+          class="text-[13.5px] font-medium text-ink-muted hover:text-ink hover:bg-surface-bg px-4 py-1.5 rounded-lg transition-colors">Stocks</a>
+        <a href="#ipo"
+          class="text-[13.5px] font-medium text-ink-muted hover:text-ink hover:bg-surface-bg px-4 py-1.5 rounded-lg transition-colors">IPO</a>
+        <a href="#strategy"
+          class="text-[13.5px] font-medium text-ink-muted hover:text-ink hover:bg-surface-bg px-4 py-1.5 rounded-lg transition-colors">Strategy</a>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <button onclick="openAuth('login')"
+          class="hidden sm:block text-[13px] font-semibold text-ink-muted border border-surface-border bg-white hover:bg-surface-bg px-4 py-2 rounded-lg transition-all">Log
+          In</button>
+        <button onclick="openAuth('signup')"
+          class="text-[13px] font-semibold text-white bg-brand hover:bg-brand-dark px-4 py-2 rounded-lg transition-all"
+          style="box-shadow:0 4px 14px rgba(0,87,255,.28)">Get Started</button>
       </div>
-      <span style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:800;color:#0C1220;letter-spacing:-.02em">Market<span style="color:#0057FF">Pulse</span></span>
-    </a>
+    </div>
+  </header>
 
-    <nav class="hidden md:flex items-center gap-0.5">
-      <a href="#dashboard" class="text-[13.5px] font-semibold text-brand bg-brand-light px-4 py-1.5 rounded-lg">Dashboard</a>
-      <a href="#stocks"    class="text-[13.5px] font-medium text-ink-muted hover:text-ink hover:bg-surface-bg px-4 py-1.5 rounded-lg transition-colors">Stocks</a>
-      <a href="#ipo"       class="text-[13.5px] font-medium text-ink-muted hover:text-ink hover:bg-surface-bg px-4 py-1.5 rounded-lg transition-colors">IPO</a>
-      <a href="#strategy"  class="text-[13.5px] font-medium text-ink-muted hover:text-ink hover:bg-surface-bg px-4 py-1.5 rounded-lg transition-colors">Strategy</a>
-    </nav>
-
-    <div class="flex items-center gap-2">
-      <button onclick="openAuth('login')" class="hidden sm:block text-[13px] font-semibold text-ink-muted border border-surface-border bg-white hover:bg-surface-bg px-4 py-2 rounded-lg transition-all">Log In</button>
-      <button onclick="openAuth('signup')" class="text-[13px] font-semibold text-white bg-brand hover:bg-brand-dark px-4 py-2 rounded-lg transition-all" style="box-shadow:0 4px 14px rgba(0,87,255,.28)">Get Started</button>
+  <!-- ═══════════════════════════ TICKER ════════════════════════════ -->
+  <div class="bg-ink h-9 flex items-center ticker-wrap">
+    <div class="ticker-track">
+      <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span
+          class="text-white font-semibold">NIFTY 50</span><span class="text-emerald-400">▲ 22,458.40
+          +0.74%</span></span>
+      <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span
+          class="text-white font-semibold">SENSEX</span><span class="text-emerald-400">▲ 73,872.29 +0.68%</span></span>
+      <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span
+          class="text-white font-semibold">BANK NIFTY</span><span class="text-red-400">▼ 48,201.55 −0.32%</span></span>
+      <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span
+          class="text-white font-semibold">FIN NIFTY</span><span class="text-emerald-400">▲ 21,340.80
+          +0.45%</span></span>
+      <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span
+          class="text-white font-semibold">RELIANCE</span><span class="text-emerald-400">▲ 2,945.50 +1.20%</span></span>
+      <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span
+          class="text-white font-semibold">TCS</span><span class="text-red-400">▼ 3,812.00 −0.55%</span></span>
+      <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span
+          class="text-white font-semibold">HDFC BANK</span><span class="text-emerald-400">▲ 1,678.90
+          +0.88%</span></span>
+      <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span
+          class="text-white font-semibold">INFY</span><span class="text-red-400">▼ 1,423.70 −0.43%</span></span>
+      <!-- dupe -->
+      <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span
+          class="text-white font-semibold">NIFTY 50</span><span class="text-emerald-400">▲ 22,458.40
+          +0.74%</span></span>
+      <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span
+          class="text-white font-semibold">SENSEX</span><span class="text-emerald-400">▲ 73,872.29 +0.68%</span></span>
+      <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span
+          class="text-white font-semibold">BANK NIFTY</span><span class="text-red-400">▼ 48,201.55 −0.32%</span></span>
+      <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span
+          class="text-white font-semibold">FIN NIFTY</span><span class="text-emerald-400">▲ 21,340.80
+          +0.45%</span></span>
+      <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span
+          class="text-white font-semibold">RELIANCE</span><span class="text-emerald-400">▲ 2,945.50 +1.20%</span></span>
+      <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span
+          class="text-white font-semibold">TCS</span><span class="text-red-400">▼ 3,812.00 −0.55%</span></span>
+      <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span
+          class="text-white font-semibold">HDFC BANK</span><span class="text-emerald-400">▲ 1,678.90
+          +0.88%</span></span>
+      <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span
+          class="text-white font-semibold">INFY</span><span class="text-red-400">▼ 1,423.70 −0.43%</span></span>
     </div>
   </div>
-</header>
 
-<!-- ═══════════════════════════ TICKER ════════════════════════════ -->
-<div class="bg-ink h-9 flex items-center ticker-wrap">
-  <div class="ticker-track">
-    <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="text-white font-semibold">NIFTY 50</span><span class="text-emerald-400">▲ 22,458.40 +0.74%</span></span>
-    <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="text-white font-semibold">SENSEX</span><span class="text-emerald-400">▲ 73,872.29 +0.68%</span></span>
-    <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="text-white font-semibold">BANK NIFTY</span><span class="text-red-400">▼ 48,201.55 −0.32%</span></span>
-    <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="text-white font-semibold">FIN NIFTY</span><span class="text-emerald-400">▲ 21,340.80 +0.45%</span></span>
-    <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="text-white font-semibold">RELIANCE</span><span class="text-emerald-400">▲ 2,945.50 +1.20%</span></span>
-    <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="text-white font-semibold">TCS</span><span class="text-red-400">▼ 3,812.00 −0.55%</span></span>
-    <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="text-white font-semibold">HDFC BANK</span><span class="text-emerald-400">▲ 1,678.90 +0.88%</span></span>
-    <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="text-white font-semibold">INFY</span><span class="text-red-400">▼ 1,423.70 −0.43%</span></span>
-    <!-- dupe -->
-    <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="text-white font-semibold">NIFTY 50</span><span class="text-emerald-400">▲ 22,458.40 +0.74%</span></span>
-    <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="text-white font-semibold">SENSEX</span><span class="text-emerald-400">▲ 73,872.29 +0.68%</span></span>
-    <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="text-white font-semibold">BANK NIFTY</span><span class="text-red-400">▼ 48,201.55 −0.32%</span></span>
-    <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="text-white font-semibold">FIN NIFTY</span><span class="text-emerald-400">▲ 21,340.80 +0.45%</span></span>
-    <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="text-white font-semibold">RELIANCE</span><span class="text-emerald-400">▲ 2,945.50 +1.20%</span></span>
-    <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="text-white font-semibold">TCS</span><span class="text-red-400">▼ 3,812.00 −0.55%</span></span>
-    <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="text-white font-semibold">HDFC BANK</span><span class="text-emerald-400">▲ 1,678.90 +0.88%</span></span>
-    <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="text-white font-semibold">INFY</span><span class="text-red-400">▼ 1,423.70 −0.43%</span></span>
-  </div>
-</div>
+  <!-- ═══════════════════════════ HERO ══════════════════════════════ -->
+  <section id="dashboard" class="bg-ink relative overflow-hidden py-20 lg:py-24">
+    <div class="absolute top-0 right-0 w-[700px] h-[700px] rounded-full pointer-events-none"
+      style="background:radial-gradient(circle,rgba(0,87,255,.14) 0%,transparent 70%);transform:translate(20%,-30%)">
+    </div>
+    <div class="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none"
+      style="background:radial-gradient(circle,rgba(0,87,255,.07) 0%,transparent 70%);transform:translate(-30%,40%)">
+    </div>
+    <div class="max-w-7xl mx-auto px-5 relative">
+      <div class="grid lg:grid-cols-2 gap-14 items-center">
+        <div>
+          <h1
+            style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(34px,5vw,56px);font-weight:800;color:white;line-height:1.07;letter-spacing:-.02em;margin-bottom:20px">
+            Trade Smarter.<br /><span style="color:#5B9FFF">Stay Ahead.</span><br />Never Miss a breakout.
+          </h1>
+          <p class="text-slate-400 mb-8 max-w-md" style="font-size:16px;line-height:1.8;font-weight:300">
+            EdgeTrade delivers ORB strategy alerts, curated IPO analysis, and real-time market intelligence — built for
+            India's retail traders.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <button onclick="openAuth('signup')"
+              class="font-semibold text-white bg-brand hover:bg-brand-dark px-7 py-3 rounded-xl transition-all text-[15px]"
+              style="box-shadow:0 4px 20px rgba(0,87,255,.35)">Start Free Trial</button>
+            <button
+              class="font-medium text-slate-300 hover:text-white border px-7 py-3 rounded-xl transition-all text-[15px]"
+              style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)">Watch Demo ↗</button>
+          </div>
+          <div class="flex items-center gap-6 mt-10 pt-8" style="border-top:1px solid rgba(255,255,255,.08)">
+            <div>
+              <p style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:white">12K+
+              </p>
+              <p class="text-slate-500 text-xs mt-0.5">Active Users</p>
+            </div>
+            <div class="w-px h-8" style="background:rgba(255,255,255,.1)"></div>
+            <div>
+              <p style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:#34d399">94%
+              </p>
+              <p class="text-slate-500 text-xs mt-0.5">Alert Accuracy</p>
+            </div>
+            <div class="w-px h-8" style="background:rgba(255,255,255,.1)"></div>
+            <div>
+              <p style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:white">₹2.4Cr
+              </p>
+              <p class="text-slate-500 text-xs mt-0.5">Avg. Signals/Day</p>
+            </div>
+          </div>
+        </div>
+        <!-- Hero demo video -->
+        <div class="relative w-full flex items-center justify-center mt-6 lg:mt-0">
 
-<!-- ═══════════════════════════ HERO ══════════════════════════════ -->
-<section id="dashboard" class="bg-ink relative overflow-hidden py-20 lg:py-24">
-  <div class="absolute top-0 right-0 w-[700px] h-[700px] rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(0,87,255,.14) 0%,transparent 70%);transform:translate(20%,-30%)"></div>
-  <div class="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(0,87,255,.07) 0%,transparent 70%);transform:translate(-30%,40%)"></div>
-  <div class="max-w-7xl mx-auto px-5 relative">
-    <div class="grid lg:grid-cols-2 gap-14 items-center">
-      <div>
-        <div class="inline-flex items-center gap-2 border px-3.5 py-1.5 rounded-full mb-6 text-blue-300" style="background:rgba(0,87,255,.15);border-color:rgba(0,87,255,.3);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 live-dot"></span>Live Market Intelligence
-        </div>
-        <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(34px,5vw,56px);font-weight:800;color:white;line-height:1.07;letter-spacing:-.02em;margin-bottom:20px">
-          Trade Smarter.<br/><span style="color:#5B9FFF">Stay Ahead.</span><br/>Never Miss a Move.
-        </h1>
-        <p class="text-slate-400 mb-8 max-w-md" style="font-size:16px;line-height:1.8;font-weight:300">
-          MarketPulse delivers ORB strategy alerts, curated IPO analysis, and real-time market intelligence — built for India's retail traders.
-        </p>
-        <div class="flex flex-wrap gap-3">
-          <button onclick="openAuth('signup')" class="font-semibold text-white bg-brand hover:bg-brand-dark px-7 py-3 rounded-xl transition-all text-[15px]" style="box-shadow:0 4px 20px rgba(0,87,255,.35)">Start Free Trial</button>
-          <button class="font-medium text-slate-300 hover:text-white border px-7 py-3 rounded-xl transition-all text-[15px]" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)">Watch Demo ↗</button>
-        </div>
-        <div class="flex items-center gap-6 mt-10 pt-8" style="border-top:1px solid rgba(255,255,255,.08)">
-          <div><p style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:white">12K+</p><p class="text-slate-500 text-xs mt-0.5">Active Users</p></div>
-          <div class="w-px h-8" style="background:rgba(255,255,255,.1)"></div>
-          <div><p style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:#34d399">94%</p><p class="text-slate-500 text-xs mt-0.5">Alert Accuracy</p></div>
-          <div class="w-px h-8" style="background:rgba(255,255,255,.1)"></div>
-          <div><p style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:white">₹2.4Cr</p><p class="text-slate-500 text-xs mt-0.5">Avg. Signals/Day</p></div>
-        </div>
-      </div>
-      <!-- Hero demo video -->
-      <div class="relative w-full flex items-center justify-center mt-6 lg:mt-0">
-
-        <!-- Ambient glow behind the container -->
-        <div class="absolute inset-0 rounded-3xl pointer-events-none"
-             style="background:radial-gradient(ellipse 80% 60% at 50% 60%, rgba(0,87,255,.28) 0%, transparent 70%);
+          <!-- Ambient glow behind the container -->
+          <div class="absolute inset-0 rounded-3xl pointer-events-none" style="background:radial-gradient(ellipse 80% 60% at 50% 60%, rgba(0,87,255,.28) 0%, transparent 70%);
                     filter:blur(24px);transform:translateY(8px);"></div>
 
-        <!-- Outer frame — mimics a browser / app chrome -->
-        <div class="relative w-full rounded-2xl overflow-hidden"
-             style="background:rgba(10,16,34,.85);
+          <!-- Outer frame — mimics a browser / app chrome -->
+          <div class="relative w-full rounded-2xl overflow-hidden" style="background:rgba(10,16,34,.85);
                     border:1px solid rgba(255,255,255,.1);
                     box-shadow:0 0 0 1px rgba(0,87,255,.18),
                                0 24px 60px rgba(0,0,0,.55),
                                0 0 80px rgba(0,87,255,.12);
                     backdrop-filter:blur(6px);">
 
-          <!-- Fake browser / app toolbar -->
-          <div class="flex items-center justify-between px-4 py-3"
-               style="background:rgba(255,255,255,.04);
-                      border-bottom:1px solid rgba(255,255,255,.07);">
-            <!-- Traffic-light dots -->
-            <div class="flex items-center gap-1.5">
-              <span class="w-3 h-3 rounded-full" style="background:#FF5F57;"></span>
-              <span class="w-3 h-3 rounded-full" style="background:#FEBC2E;"></span>
-              <span class="w-3 h-3 rounded-full" style="background:#28C840;"></span>
-            </div>
-            <!-- Fake URL bar -->
-            <div class="flex items-center gap-2 px-3 py-1 rounded-md"
-                 style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#6B7385" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
-              <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#6B7385;letter-spacing:.02em">app.marketpulse.in/dashboard</span>
-            </div>
-            <!-- Live badge -->
-            <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full"
-                 style="background:rgba(5,150,105,.15);border:1px solid rgba(5,150,105,.25);">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 live-dot"></span>
-              <span style="font-size:10px;font-weight:700;color:#34D399;letter-spacing:.06em;text-transform:uppercase">Live</span>
-            </div>
-          </div>
 
-          <!-- Video element — aspect ratio 16/9 -->
-          <div class="relative w-full" style="aspect-ratio:16/9;">
-            <video
-              class="w-full h-full object-cover block"
-              autoplay muted loop playsinline
-              style="display:block;">
-              <!-- Drop your demo video src here. Using a public sample as placeholder. -->
-              <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"/>
-            </video>
 
-            <!-- Overlay: subtle vignette so edges blend into the dark frame -->
-            <div class="absolute inset-0 pointer-events-none"
-                 style="background:linear-gradient(to bottom,
+            <!-- Video element — aspect ratio 16/9 -->
+            <div class="relative w-full" style="aspect-ratio:16/9;">
+              <video class="w-full h-full object-cover block" autoplay muted loop playsinline style="display:block;">
+                <!-- Drop your demo video src here. Using a public sample as placeholder. -->
+                <source src="/static/videos/orb-demo.mp4" type="video/mp4" />
+              </video>
+
+              <!-- Overlay: subtle vignette so edges blend into the dark frame -->
+              <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(to bottom,
                           rgba(10,16,34,.15) 0%,
                           transparent 25%,
                           transparent 75%,
                           rgba(10,16,34,.25) 100%);"></div>
 
-            <!-- "Demo" watermark badge — bottom-left -->
-            <div class="absolute bottom-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full"
-                 style="background:rgba(10,16,34,.75);
+              <!-- "Demo" watermark badge — bottom-left -->
+              <div class="absolute bottom-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full" style="background:rgba(10,16,34,.75);
                         border:1px solid rgba(255,255,255,.1);
                         backdrop-filter:blur(8px);">
-              <svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round">
-                <polyline points="1,14 6,8 10,12 14,5 18,9"/>
-                <circle cx="18" cy="4" r="2.2" fill="white" stroke="none"/>
-              </svg>
-              <span style="font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;color:rgba(255,255,255,.75);letter-spacing:.04em;">MarketPulse Dashboard</span>
-            </div>
-
-            <!-- ORB alert toast — top-right, animated -->
-            <div class="absolute top-4 right-4 flex items-start gap-2.5 px-3.5 py-2.5 rounded-xl"
-                 style="background:rgba(10,16,34,.82);
-                        border:1px solid rgba(5,150,105,.3);
-                        backdrop-filter:blur(8px);
-                        animation:toastPop 4s ease-in-out infinite;">
-              <div class="w-6 h-6 rounded-lg flex items-center justify-center shrink-0 mt-0.5"
-                   style="background:rgba(5,150,105,.2);">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5" stroke-linecap="round"><polyline points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/></svg>
-              </div>
-              <div>
-                <p style="font-size:11px;font-weight:700;color:#34D399;letter-spacing:.04em;text-transform:uppercase;margin-bottom:1px;">ORB Breakout Alert</p>
-                <p style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.7);">RELIANCE ▲ crossed ₹2,940</p>
+                <svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="2.2"
+                  stroke-linecap="round">
+                  <polyline points="1,14 6,8 10,12 14,5 18,9" />
+                  <circle cx="18" cy="4" r="2.2" fill="white" stroke="none" />
+                </svg>
+                <span
+                  style="font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;color:rgba(255,255,255,.75);letter-spacing:.04em;">EdgeTrade
+                  Dashboard</span>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ═══════════════════════════ INDICES ═══════════════════════════ -->
-<section id="indices" class="py-20 max-w-7xl mx-auto px-5 reveal">
-  <div class="mb-12">
-    <span class="block text-brand mb-2" style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase">Market Overview</span>
-    <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(26px,4vw,38px);font-weight:800;color:#0C1220;line-height:1.15;letter-spacing:-.015em">Major Indices</h2>
-    <p class="text-ink-muted mt-2.5 max-w-md" style="font-size:15px;line-height:1.75">Live data for India's key benchmark indices, updated tick by tick.</p>
-  </div>
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-    <div class="idx-card bull-bar bg-white border border-surface-border rounded-2xl p-6 clift cursor-pointer">
-      <div class="flex justify-between items-start mb-3">
-        <span class="text-ink-muted" style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Nifty 50</span>
-        <span class="text-bull bg-bull-light px-2.5 py-0.5 rounded-full" style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700">▲ 0.74%</span>
-      </div>
-      <p style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:500;color:#0C1220;line-height:1">22,458<span style="font-size:16px;color:#94A3B8">.40</span></p>
-      <p class="text-ink-muted mt-1 mb-4" style="font-family:'JetBrains Mono',monospace;font-size:12px">+165.40 pts today</p>
-      <svg viewBox="0 0 160 44" fill="none" class="w-full"><polyline points="0,36 22,28 42,31 65,20 88,23 112,13 136,16 160,8" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="0,36 22,28 42,31 65,20 88,23 112,13 136,16 160,8 160,44 0,44" fill="rgba(5,150,105,.07)"/></svg>
-    </div>
-    <div class="idx-card bull-bar bg-white border border-surface-border rounded-2xl p-6 clift cursor-pointer">
-      <div class="flex justify-between items-start mb-3">
-        <span class="text-ink-muted" style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Sensex</span>
-        <span class="text-bull bg-bull-light px-2.5 py-0.5 rounded-full" style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700">▲ 0.68%</span>
-      </div>
-      <p style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:500;color:#0C1220;line-height:1">73,872<span style="font-size:16px;color:#94A3B8">.29</span></p>
-      <p class="text-ink-muted mt-1 mb-4" style="font-family:'JetBrains Mono',monospace;font-size:12px">+499.65 pts today</p>
-      <svg viewBox="0 0 160 44" fill="none" class="w-full"><polyline points="0,34 20,26 42,29 64,18 86,21 108,11 134,14 160,6" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="0,34 20,26 42,29 64,18 86,21 108,11 134,14 160,6 160,44 0,44" fill="rgba(5,150,105,.07)"/></svg>
-    </div>
-    <div class="idx-card bear-bar bg-white border border-surface-border rounded-2xl p-6 clift cursor-pointer">
-      <div class="flex justify-between items-start mb-3">
-        <span class="text-ink-muted" style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Bank Nifty</span>
-        <span class="text-bear bg-bear-light px-2.5 py-0.5 rounded-full" style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700">▼ 0.32%</span>
-      </div>
-      <p style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:500;color:#0C1220;line-height:1">48,201<span style="font-size:16px;color:#94A3B8">.55</span></p>
-      <p class="text-ink-muted mt-1 mb-4" style="font-family:'JetBrains Mono',monospace;font-size:12px">−155.20 pts today</p>
-      <svg viewBox="0 0 160 44" fill="none" class="w-full"><polyline points="0,8 22,12 42,10 64,18 84,22 106,27 130,30 160,36" stroke="#DC2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="0,8 22,12 42,10 64,18 84,22 106,27 130,30 160,36 160,44 0,44" fill="rgba(220,38,38,.07)"/></svg>
-    </div>
-    <div class="idx-card bull-bar bg-white border border-surface-border rounded-2xl p-6 clift cursor-pointer">
-      <div class="flex justify-between items-start mb-3">
-        <span class="text-ink-muted" style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Fin Nifty</span>
-        <span class="text-bull bg-bull-light px-2.5 py-0.5 rounded-full" style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700">▲ 0.45%</span>
-      </div>
-      <p style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:500;color:#0C1220;line-height:1">21,340<span style="font-size:16px;color:#94A3B8">.80</span></p>
-      <p class="text-ink-muted mt-1 mb-4" style="font-family:'JetBrains Mono',monospace;font-size:12px">+96.80 pts today</p>
-      <svg viewBox="0 0 160 44" fill="none" class="w-full"><polyline points="0,30 22,22 42,26 62,16 82,18 106,10 130,12 160,7" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="0,30 22,22 42,26 62,16 82,18 106,10 130,12 160,7 160,44 0,44" fill="rgba(5,150,105,.07)"/></svg>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════ STOCKS TO WATCH (Tickertape-style) ═══ -->
-<section id="stocks" class="pb-20 max-w-7xl mx-auto px-5 reveal">
-  <div class="bg-white border border-surface-border rounded-2xl overflow-hidden">
-    <!-- Header row -->
-    <div class="flex items-center justify-between px-6 pt-6 pb-4 border-b border-surface-border">
-      <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:800;color:#0C1220">Stocks to Watch</h2>
-      <div class="flex items-center gap-2">
-        <!-- Tab pills -->
-        <div class="flex gap-1.5 bg-surface-bg p-1 rounded-lg mr-2">
-          <button onclick="activateTab(this,'tab-content')" class="stock-tab active text-[12px] font-semibold px-3 py-1.5 rounded-md bg-white text-ink shadow-card transition-all">All</button>
-          <button onclick="activateTab(this,'tab-content')" class="stock-tab text-[12px] font-semibold px-3 py-1.5 rounded-md text-ink-muted hover:text-ink transition-all">ORB Alerts</button>
-          <button onclick="activateTab(this,'tab-content')" class="stock-tab text-[12px] font-semibold px-3 py-1.5 rounded-md text-ink-muted hover:text-ink transition-all">Gainers</button>
-          <button onclick="activateTab(this,'tab-content')" class="stock-tab text-[12px] font-semibold px-3 py-1.5 rounded-md text-ink-muted hover:text-ink transition-all">Losers</button>
-        </div>
-        <a href="#" class="text-brand font-semibold hover:underline" style="font-size:13px">See All</a>
-      </div>
-    </div>
-
-    <!-- Column headers -->
-    <div class="grid px-6 py-2.5 border-b border-surface-border" style="grid-template-columns:220px 1fr 130px 100px 110px">
-      <span class="text-ink-subtle" style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase">Company</span>
-      <span></span><!-- sparkline col -->
-      <span class="text-right text-ink-subtle" style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase">Price</span>
-      <span class="text-right text-ink-subtle" style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase">Change</span>
-      <span></span>
-    </div>
-
-    <!-- Stock rows -->
-    <div id="tab-content">
-      <!-- Row: RELIANCE -->
-      <div class="mkt-row grid items-center px-6 py-4 border-b border-surface-border cursor-pointer" style="grid-template-columns:220px 1fr 130px 100px 110px">
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0" style="background:linear-gradient(135deg,#0057FF,#38BDF8);font-size:10px;font-weight:800">REL</div>
-          <div>
-            <p class="font-semibold text-ink" style="font-size:14px">RELIANCE</p>
-            <p class="text-ink-muted" style="font-size:11px">Reliance Industries</p>
-          </div>
-        </div>
-        <svg viewBox="0 0 100 32" fill="none" class="w-28"><polyline points="0,24 12,18 24,20 38,12 52,14 66,7 80,9 100,4" stroke="#059669" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="0,24 12,18 24,20 38,12 52,14 66,7 80,9 100,4 100,32 0,32" fill="rgba(5,150,105,.06)"/></svg>
-        <p class="text-right font-semibold text-ink" style="font-family:'JetBrains Mono',monospace;font-size:15px">₹2,945.50</p>
-        <div class="text-right"><span class="inline-flex items-center justify-end gap-1 text-bull" style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600"><svg width="10" height="10" viewBox="0 0 10 10" fill="#059669"><path d="M5 1l4 8H1z"/></svg>1.20%</span></div>
-        <div class="flex justify-end"><button class="text-brand bg-brand-light hover:bg-brand hover:text-white px-3 py-1.5 rounded-lg transition-all font-semibold" style="font-size:11px">View Details</button></div>
-      </div>
-      <!-- Row: HDFCBANK -->
-      <div class="mkt-row grid items-center px-6 py-4 border-b border-surface-border cursor-pointer" style="grid-template-columns:220px 1fr 130px 100px 110px">
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0" style="background:linear-gradient(135deg,#059669,#34D399);font-size:10px;font-weight:800">HDB</div>
-          <div>
-            <p class="font-semibold text-ink" style="font-size:14px">HDFCBANK</p>
-            <p class="text-ink-muted" style="font-size:11px">HDFC Bank Ltd.</p>
-          </div>
-        </div>
-        <svg viewBox="0 0 100 32" fill="none" class="w-28"><polyline points="0,22 14,16 28,18 42,10 56,13 70,6 84,8 100,3" stroke="#059669" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="0,22 14,16 28,18 42,10 56,13 70,6 84,8 100,3 100,32 0,32" fill="rgba(5,150,105,.06)"/></svg>
-        <p class="text-right font-semibold text-ink" style="font-family:'JetBrains Mono',monospace;font-size:15px">₹1,678.90</p>
-        <div class="text-right"><span class="inline-flex items-center justify-end gap-1 text-bull" style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600"><svg width="10" height="10" viewBox="0 0 10 10" fill="#059669"><path d="M5 1l4 8H1z"/></svg>0.88%</span></div>
-        <div class="flex justify-end"><button class="text-brand bg-brand-light hover:bg-brand hover:text-white px-3 py-1.5 rounded-lg transition-all font-semibold" style="font-size:11px">View Details</button></div>
-      </div>
-      <!-- Row: TCS -->
-      <div class="mkt-row grid items-center px-6 py-4 border-b border-surface-border cursor-pointer" style="grid-template-columns:220px 1fr 130px 100px 110px">
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0" style="background:linear-gradient(135deg,#DC2626,#F87171);font-size:10px;font-weight:800">TCS</div>
-          <div>
-            <p class="font-semibold text-ink" style="font-size:14px">TCS</p>
-            <p class="text-ink-muted" style="font-size:11px">Tata Consultancy Services</p>
-          </div>
-        </div>
-        <svg viewBox="0 0 100 32" fill="none" class="w-28"><polyline points="0,6 14,9 28,7 42,13 56,16 70,20 84,22 100,27" stroke="#DC2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="0,6 14,9 28,7 42,13 56,16 70,20 84,22 100,27 100,32 0,32" fill="rgba(220,38,38,.06)"/></svg>
-        <p class="text-right font-semibold text-ink" style="font-family:'JetBrains Mono',monospace;font-size:15px">₹3,812.00</p>
-        <div class="text-right"><span class="inline-flex items-center justify-end gap-1 text-bear" style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600"><svg width="10" height="10" viewBox="0 0 10 10" fill="#DC2626"><path d="M5 9L1 1h8z"/></svg>0.55%</span></div>
-        <div class="flex justify-end"><button class="text-brand bg-brand-light hover:bg-brand hover:text-white px-3 py-1.5 rounded-lg transition-all font-semibold" style="font-size:11px">View Details</button></div>
-      </div>
-      <!-- Row: INFY -->
-      <div class="mkt-row grid items-center px-6 py-4 border-b border-surface-border cursor-pointer" style="grid-template-columns:220px 1fr 130px 100px 110px">
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0" style="background:linear-gradient(135deg,#7C3AED,#A78BFA);font-size:10px;font-weight:800">INF</div>
-          <div>
-            <p class="font-semibold text-ink" style="font-size:14px">INFY</p>
-            <p class="text-ink-muted" style="font-size:11px">Infosys Ltd.</p>
-          </div>
-        </div>
-        <svg viewBox="0 0 100 32" fill="none" class="w-28"><polyline points="0,5 14,9 28,7 42,14 56,17 70,22 84,24 100,29" stroke="#DC2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="0,5 14,9 28,7 42,14 56,17 70,22 84,24 100,29 100,32 0,32" fill="rgba(220,38,38,.06)"/></svg>
-        <p class="text-right font-semibold text-ink" style="font-family:'JetBrains Mono',monospace;font-size:15px">₹1,423.70</p>
-        <div class="text-right"><span class="inline-flex items-center justify-end gap-1 text-bear" style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600"><svg width="10" height="10" viewBox="0 0 10 10" fill="#DC2626"><path d="M5 9L1 1h8z"/></svg>0.43%</span></div>
-        <div class="flex justify-end"><button class="text-brand bg-brand-light hover:bg-brand hover:text-white px-3 py-1.5 rounded-lg transition-all font-semibold" style="font-size:11px">View Details</button></div>
-      </div>
-      <!-- Row: WIPRO -->
-      <div class="mkt-row grid items-center px-6 py-4 border-b border-surface-border cursor-pointer" style="grid-template-columns:220px 1fr 130px 100px 110px">
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0" style="background:linear-gradient(135deg,#F59E0B,#FCD34D);font-size:10px;font-weight:800;color:#78350F">WIP</div>
-          <div>
-            <p class="font-semibold text-ink" style="font-size:14px">WIPRO</p>
-            <p class="text-ink-muted" style="font-size:11px">Wipro Ltd.</p>
-          </div>
-        </div>
-        <svg viewBox="0 0 100 32" fill="none" class="w-28"><polyline points="0,26 14,20 28,22 42,14 56,16 70,9 84,11 100,5" stroke="#059669" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="0,26 14,20 28,22 42,14 56,16 70,9 84,11 100,5 100,32 0,32" fill="rgba(5,150,105,.06)"/></svg>
-        <p class="text-right font-semibold text-ink" style="font-family:'JetBrains Mono',monospace;font-size:15px">₹483.60</p>
-        <div class="text-right"><span class="inline-flex items-center justify-end gap-1 text-bull" style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600"><svg width="10" height="10" viewBox="0 0 10 10" fill="#059669"><path d="M5 1l4 8H1z"/></svg>0.65%</span></div>
-        <div class="flex justify-end"><button class="text-brand bg-brand-light hover:bg-brand hover:text-white px-3 py-1.5 rounded-lg transition-all font-semibold" style="font-size:11px">View Details</button></div>
-      </div>
-      <!-- Row: ICICIBANK -->
-      <div class="mkt-row grid items-center px-6 py-4 cursor-pointer" style="grid-template-columns:220px 1fr 130px 100px 110px">
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0" style="background:linear-gradient(135deg,#0EA5E9,#22D3EE);font-size:10px;font-weight:800">ICI</div>
-          <div>
-            <p class="font-semibold text-ink" style="font-size:14px">ICICIBANK</p>
-            <p class="text-ink-muted" style="font-size:11px">ICICI Bank Ltd.</p>
-          </div>
-        </div>
-        <svg viewBox="0 0 100 32" fill="none" class="w-28"><polyline points="0,28 14,22 28,24 42,15 56,17 70,10 84,12 100,6" stroke="#059669" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="0,28 14,22 28,24 42,15 56,17 70,10 84,12 100,6 100,32 0,32" fill="rgba(5,150,105,.06)"/></svg>
-        <p class="text-right font-semibold text-ink" style="font-family:'JetBrains Mono',monospace;font-size:15px">₹1,092.40</p>
-        <div class="text-right"><span class="inline-flex items-center justify-end gap-1 text-bull" style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600"><svg width="10" height="10" viewBox="0 0 10 10" fill="#059669"><path d="M5 1l4 8H1z"/></svg>1.05%</span></div>
-        <div class="flex justify-end"><button class="text-brand bg-brand-light hover:bg-brand hover:text-white px-3 py-1.5 rounded-lg transition-all font-semibold" style="font-size:11px">View Details</button></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════ WHAT WE OFFER ════════════════════ -->
-<section id="strategy" class="bg-ink py-20 reveal">
-  <div class="max-w-7xl mx-auto px-5">
-    <div class="grid lg:grid-cols-2 gap-16 items-center">
-      <div>
-        <span class="block text-blue-400 mb-3" style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase">What We Offer</span>
-        <h2 class="text-white mb-3" style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(26px,4vw,40px);font-weight:800;line-height:1.12;letter-spacing:-.02em">Tools Built for<br/>Retail Traders</h2>
-        <p class="text-slate-400 mb-10 max-w-md" style="font-size:15px;line-height:1.8;font-weight:300">Simple, powerful features that help you act at the right moment — without spending hours monitoring charts.</p>
-        <div class="rounded-2xl p-7 mb-4 transition-all hover:-translate-y-1" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)">
-          <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5" style="background:rgba(91,159,255,.15)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5B9FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/></svg>
-          </div>
-          <h3 class="text-white mb-3" style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700">ORB Strategy Alerts</h3>
-          <p class="text-slate-400" style="font-size:14px;line-height:1.8">When a stock breaks above or below its first 15-minute candle range, you receive an instant push alert — act before the momentum fades.</p>
-          <span class="inline-block mt-4 text-blue-400 rounded-full" style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:rgba(91,159,255,.12);padding:4px 12px">Real-Time Alerts</span>
-        </div>
-        <div class="rounded-2xl p-7 transition-all hover:-translate-y-1" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)">
-          <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5" style="background:rgba(251,191,36,.12)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          </div>
-          <h3 class="text-white mb-3" style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700">IPO Recommendation System</h3>
-          <p class="text-slate-400" style="font-size:14px;line-height:1.8">Every upcoming IPO analysed for financials, GMP, subscription data and sector outlook — a clear Invest / Avoid verdict, every time.</p>
-          <span class="inline-block mt-4 text-amber-400 rounded-full" style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:rgba(251,191,36,.1);padding:4px 12px">Curated Analysis</span>
-        </div>
-      </div>
-      <div class="rounded-2xl overflow-hidden border flex flex-col items-center justify-center gap-5 cursor-pointer group transition-all hover:-translate-y-1" style="background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);aspect-ratio:16/11;position:relative">
-        <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(0,87,255,.15) 0%,transparent 65%)"></div>
-        <div class="w-16 h-16 rounded-full bg-brand flex items-center justify-center relative z-10 group-hover:scale-110 transition-transform" style="box-shadow:0 0 0 16px rgba(0,87,255,.12)">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
-        </div>
-        <p class="text-slate-400 text-center px-8 relative z-10" style="font-size:13px;line-height:1.7">Watch how MarketPulse works<br/>2-minute product overview</p>
-        <span class="text-blue-400 rounded-full relative z-10" style="font-size:11px;font-weight:600;background:rgba(91,159,255,.1);padding:5px 14px">Video coming soon via Google Veo</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════ TESTIMONIALS ═════════════════════ -->
-<section class="py-20 reveal">
-  <div class="max-w-7xl mx-auto px-5">
+  <!-- ═══════════════════════════ INDICES ═══════════════════════════ -->
+  <section id="indices" class="py-20 max-w-7xl mx-auto px-5 reveal">
     <div class="mb-12">
-      <span class="block text-brand mb-2" style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase">User Feedback</span>
-      <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(26px,4vw,38px);font-weight:800;color:#0C1220;line-height:1.15;letter-spacing:-.015em">Trusted by Traders</h2>
-      <p class="text-ink-muted mt-2.5 max-w-md" style="font-size:15px;line-height:1.75">Hear how MarketPulse helps retail investors make smarter, faster decisions every day.</p>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-      <div class="bg-white border border-surface-border rounded-2xl p-7 clift flex flex-col gap-4">
-        <div class="text-gold" style="font-size:15px;letter-spacing:3px">★★★★★</div>
-        <p class="text-ink flex-1" style="font-size:14.5px;line-height:1.8"><span style="color:#0057FF;font-size:28px;font-family:Georgia;line-height:0;vertical-align:-10px;margin-right:2px">"</span>The ORB alerts are a game-changer. I used to miss breakouts. Now I get a notification and act immediately.</p>
-        <div class="flex items-center gap-3 pt-3 border-t border-surface-border">
-          <div class="w-9 h-9 rounded-full flex items-center justify-center text-white shrink-0" style="background:linear-gradient(135deg,#0057FF,#38BDF8);font-size:12px;font-weight:700">AK</div>
-          <div><p class="font-semibold text-ink" style="font-size:13px">Arjun Kapoor</p><p class="text-ink-muted" style="font-size:11px">Positional Trader · Mumbai</p></div>
-        </div>
-      </div>
-      <div class="bg-white border border-surface-border rounded-2xl p-7 clift flex flex-col gap-4">
-        <div class="text-gold" style="font-size:15px;letter-spacing:3px">★★★★★</div>
-        <p class="text-ink flex-1" style="font-size:14.5px;line-height:1.8"><span style="color:#0057FF;font-size:28px;font-family:Georgia;line-height:0;vertical-align:-10px;margin-right:2px">"</span>Their IPO analysis saved me from a bad allotment. Recommendation was spot on — 35% premium on listing day!</p>
-        <div class="flex items-center gap-3 pt-3 border-t border-surface-border">
-          <div class="w-9 h-9 rounded-full flex items-center justify-center text-white shrink-0" style="background:linear-gradient(135deg,#059669,#34D399);font-size:12px;font-weight:700">PS</div>
-          <div><p class="font-semibold text-ink" style="font-size:13px">Priya Sharma</p><p class="text-ink-muted" style="font-size:11px">Long-term Investor · Pune</p></div>
-        </div>
-      </div>
-      <div class="bg-white border border-surface-border rounded-2xl p-7 clift flex flex-col gap-4">
-        <div class="text-gold" style="font-size:15px;letter-spacing:3px">★★★★☆</div>
-        <p class="text-ink flex-1" style="font-size:14.5px;line-height:1.8"><span style="color:#0057FF;font-size:28px;font-family:Georgia;line-height:0;vertical-align:-10px;margin-right:2px">"</span>Clean and simple. Other platforms overwhelm me. MarketPulse shows only what matters, and alerts are fast.</p>
-        <div class="flex items-center gap-3 pt-3 border-t border-surface-border">
-          <div class="w-9 h-9 rounded-full flex items-center justify-center text-white shrink-0" style="background:linear-gradient(135deg,#F59E0B,#FB923C);font-size:12px;font-weight:700">RV</div>
-          <div><p class="font-semibold text-ink" style="font-size:13px">Rohit Verma</p><p class="text-ink-muted" style="font-size:11px">Part-time Trader · Bangalore</p></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════ WHY CHOOSE US ════════════════════ -->
-<section class="bg-white py-20 reveal">
-  <div class="max-w-7xl mx-auto px-5">
-    <div class="mb-12">
-      <span class="block text-brand mb-2" style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase">Why MarketPulse</span>
-      <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(26px,4vw,38px);font-weight:800;color:#0C1220;line-height:1.15;letter-spacing:-.015em">Built for the Modern Trader</h2>
-      <p class="text-ink-muted mt-2.5 max-w-md" style="font-size:15px;line-height:1.75">Every feature reduces time spent monitoring and increases time spent acting.</p>
+      <span class="block text-brand mb-2"
+        style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase">Market Overview</span>
+      <h2
+        style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(26px,4vw,38px);font-weight:800;color:#0C1220;line-height:1.15;letter-spacing:-.015em">
+        Major Indices</h2>
+      <p class="text-ink-muted mt-2.5 max-w-md" style="font-size:15px;line-height:1.75">Live data for India's key
+        benchmark indices, updated tick by tick.</p>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-      <div class="why-card bg-surface-bg border border-surface-border rounded-2xl p-7 clift">
-        <div class="wicon w-12 h-12 rounded-xl bg-brand-light flex items-center justify-center mb-5"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0057FF" stroke-width="2" stroke-linecap="round"><polyline points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/></svg></div>
-        <h3 class="font-bold text-ink mb-2" style="font-family:'Bricolage Grotesque',sans-serif;font-size:16px">Real-Time Notifications</h3>
-        <p class="text-ink-muted" style="font-size:13.5px;line-height:1.72">Push alerts the moment a breakout occurs. Never miss a setup because you weren't watching.</p>
+      <div class="idx-card bull-bar bg-white border border-surface-border rounded-2xl p-6 clift cursor-pointer">
+        <div class="flex justify-between items-start mb-3">
+          <span class="text-ink-muted"
+            style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Nifty 50</span>
+          <span class="text-bull bg-bull-light px-2.5 py-0.5 rounded-full"
+            style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700">▲ 0.74%</span>
+        </div>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:500;color:#0C1220;line-height:1">
+          22,458<span style="font-size:16px;color:#94A3B8">.40</span></p>
+        <p class="text-ink-muted mt-1 mb-4" style="font-family:'JetBrains Mono',monospace;font-size:12px">+165.40 pts
+          today</p>
+        <svg viewBox="0 0 160 44" fill="none" class="w-full">
+          <polyline points="0,36 22,28 42,31 65,20 88,23 112,13 136,16 160,8" stroke="#059669" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" />
+          <polyline points="0,36 22,28 42,31 65,20 88,23 112,13 136,16 160,8 160,44 0,44" fill="rgba(5,150,105,.07)" />
+        </svg>
       </div>
-      <div class="why-card bg-surface-bg border border-surface-border rounded-2xl p-7 clift">
-        <div class="wicon w-12 h-12 rounded-xl bg-brand-light flex items-center justify-center mb-5"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0057FF" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg></div>
-        <h3 class="font-bold text-ink mb-2" style="font-family:'Bricolage Grotesque',sans-serif;font-size:16px">Simple Strategies</h3>
-        <p class="text-ink-muted" style="font-size:13.5px;line-height:1.72">Proven strategies like ORB translated into clear, actionable signals — no complex theory required.</p>
+      <div class="idx-card bull-bar bg-white border border-surface-border rounded-2xl p-6 clift cursor-pointer">
+        <div class="flex justify-between items-start mb-3">
+          <span class="text-ink-muted"
+            style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Sensex</span>
+          <span class="text-bull bg-bull-light px-2.5 py-0.5 rounded-full"
+            style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700">▲ 0.68%</span>
+        </div>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:500;color:#0C1220;line-height:1">
+          73,872<span style="font-size:16px;color:#94A3B8">.29</span></p>
+        <p class="text-ink-muted mt-1 mb-4" style="font-family:'JetBrains Mono',monospace;font-size:12px">+499.65 pts
+          today</p>
+        <svg viewBox="0 0 160 44" fill="none" class="w-full">
+          <polyline points="0,34 20,26 42,29 64,18 86,21 108,11 134,14 160,6" stroke="#059669" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" />
+          <polyline points="0,34 20,26 42,29 64,18 86,21 108,11 134,14 160,6 160,44 0,44" fill="rgba(5,150,105,.07)" />
+        </svg>
       </div>
-      <div class="why-card bg-surface-bg border border-surface-border rounded-2xl p-7 clift">
-        <div class="wicon w-12 h-12 rounded-xl bg-brand-light flex items-center justify-center mb-5"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0057FF" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
-        <h3 class="font-bold text-ink mb-2" style="font-family:'Bricolage Grotesque',sans-serif;font-size:16px">Saves You Time</h3>
-        <p class="text-ink-muted" style="font-size:13.5px;line-height:1.72">Stop staring at charts. Our scanner alerts you only when something actually matters.</p>
+      <div class="idx-card bear-bar bg-white border border-surface-border rounded-2xl p-6 clift cursor-pointer">
+        <div class="flex justify-between items-start mb-3">
+          <span class="text-ink-muted"
+            style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Bank Nifty</span>
+          <span class="text-bear bg-bear-light px-2.5 py-0.5 rounded-full"
+            style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700">▼ 0.32%</span>
+        </div>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:500;color:#0C1220;line-height:1">
+          48,201<span style="font-size:16px;color:#94A3B8">.55</span></p>
+        <p class="text-ink-muted mt-1 mb-4" style="font-family:'JetBrains Mono',monospace;font-size:12px">−155.20 pts
+          today</p>
+        <svg viewBox="0 0 160 44" fill="none" class="w-full">
+          <polyline points="0,8 22,12 42,10 64,18 84,22 106,27 130,30 160,36" stroke="#DC2626" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" />
+          <polyline points="0,8 22,12 42,10 64,18 84,22 106,27 130,30 160,36 160,44 0,44" fill="rgba(220,38,38,.07)" />
+        </svg>
       </div>
-      <div class="why-card bg-surface-bg border border-surface-border rounded-2xl p-7 clift">
-        <div class="wicon w-12 h-12 rounded-xl bg-brand-light flex items-center justify-center mb-5"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0057FF" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-        <h3 class="font-bold text-ink mb-2" style="font-family:'Bricolage Grotesque',sans-serif;font-size:16px">Built for Retail</h3>
-        <p class="text-ink-muted" style="font-size:13.5px;line-height:1.72">No institutional jargon. Designed for everyday traders who want to compete effectively.</p>
+      <div class="idx-card bull-bar bg-white border border-surface-border rounded-2xl p-6 clift cursor-pointer">
+        <div class="flex justify-between items-start mb-3">
+          <span class="text-ink-muted"
+            style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Fin Nifty</span>
+          <span class="text-bull bg-bull-light px-2.5 py-0.5 rounded-full"
+            style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700">▲ 0.45%</span>
+        </div>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:500;color:#0C1220;line-height:1">
+          21,340<span style="font-size:16px;color:#94A3B8">.80</span></p>
+        <p class="text-ink-muted mt-1 mb-4" style="font-family:'JetBrains Mono',monospace;font-size:12px">+96.80 pts
+          today</p>
+        <svg viewBox="0 0 160 44" fill="none" class="w-full">
+          <polyline points="0,30 22,22 42,26 62,16 82,18 106,10 130,12 160,7" stroke="#059669" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" />
+          <polyline points="0,30 22,22 42,26 62,16 82,18 106,10 130,12 160,7 160,44 0,44" fill="rgba(5,150,105,.07)" />
+        </svg>
       </div>
     </div>
+  </section>
+
+  <!-- ═══════════════════════════ STOCKS TO WATCH (Tickertape-style) ═══ -->
+  <section id="stocks" class="pb-20 max-w-7xl mx-auto px-5 reveal">
+    <div class="bg-white border border-surface-border rounded-2xl overflow-hidden">
+      <!-- Header row -->
+      <div class="flex items-center justify-between px-6 pt-6 pb-4 border-b border-surface-border">
+        <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:800;color:#0C1220">Stocks to
+          Watch</h2>
+        <div class="flex items-center gap-2">
+          <!-- Tab pills -->
+          <div class="flex gap-1.5 bg-surface-bg p-1 rounded-lg mr-2">
+            <button onclick="activateTab(this,'tab-content')"
+              class="stock-tab active text-[12px] font-semibold px-3 py-1.5 rounded-md bg-white text-ink shadow-card transition-all">All</button>
+            <button onclick="activateTab(this,'tab-content')"
+              class="stock-tab text-[12px] font-semibold px-3 py-1.5 rounded-md text-ink-muted hover:text-ink transition-all">ORB
+              Alerts</button>
+            <button onclick="activateTab(this,'tab-content')"
+              class="stock-tab text-[12px] font-semibold px-3 py-1.5 rounded-md text-ink-muted hover:text-ink transition-all">Gainers</button>
+            <button onclick="activateTab(this,'tab-content')"
+              class="stock-tab text-[12px] font-semibold px-3 py-1.5 rounded-md text-ink-muted hover:text-ink transition-all">Losers</button>
+          </div>
+          <a href="#" class="text-brand font-semibold hover:underline" style="font-size:13px">See All</a>
+        </div>
+      </div>
+
+      <!-- Column headers -->
+      <div class="grid px-6 py-2.5 border-b border-surface-border"
+        style="grid-template-columns:220px 1fr 130px 100px 110px">
+        <span class="text-ink-subtle"
+          style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase">Company</span>
+        <span></span><!-- sparkline col -->
+        <span class="text-right text-ink-subtle"
+          style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase">Price</span>
+        <span class="text-right text-ink-subtle"
+          style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase">Change</span>
+        <span></span>
+      </div>
+
+      <!-- Stock rows -->
+      <div id="tab-content">
+        <!-- Row: RELIANCE -->
+        <div class="mkt-row grid items-center px-6 py-4 border-b border-surface-border cursor-pointer"
+          style="grid-template-columns:220px 1fr 130px 100px 110px">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0"
+              style="background:linear-gradient(135deg,#0057FF,#38BDF8);font-size:10px;font-weight:800">REL</div>
+            <div>
+              <p class="font-semibold text-ink" style="font-size:14px">RELIANCE</p>
+              <p class="text-ink-muted" style="font-size:11px">Reliance Industries</p>
+            </div>
+          </div>
+          <svg viewBox="0 0 100 32" fill="none" class="w-28">
+            <polyline points="0,24 12,18 24,20 38,12 52,14 66,7 80,9 100,4" stroke="#059669" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round" />
+            <polyline points="0,24 12,18 24,20 38,12 52,14 66,7 80,9 100,4 100,32 0,32" fill="rgba(5,150,105,.06)" />
+          </svg>
+          <p class="text-right font-semibold text-ink" style="font-family:'JetBrains Mono',monospace;font-size:15px">
+            ₹2,945.50</p>
+          <div class="text-right"><span class="inline-flex items-center justify-end gap-1 text-bull"
+              style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600"><svg width="10" height="10"
+                viewBox="0 0 10 10" fill="#059669">
+                <path d="M5 1l4 8H1z" />
+              </svg>1.20%</span></div>
+          <div class="flex justify-end"><button
+              class="text-brand bg-brand-light hover:bg-brand hover:text-white px-3 py-1.5 rounded-lg transition-all font-semibold"
+              style="font-size:11px">View Details</button></div>
+        </div>
+        <!-- Row: HDFCBANK -->
+        <div class="mkt-row grid items-center px-6 py-4 border-b border-surface-border cursor-pointer"
+          style="grid-template-columns:220px 1fr 130px 100px 110px">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0"
+              style="background:linear-gradient(135deg,#059669,#34D399);font-size:10px;font-weight:800">HDB</div>
+            <div>
+              <p class="font-semibold text-ink" style="font-size:14px">HDFCBANK</p>
+              <p class="text-ink-muted" style="font-size:11px">HDFC Bank Ltd.</p>
+            </div>
+          </div>
+          <svg viewBox="0 0 100 32" fill="none" class="w-28">
+            <polyline points="0,22 14,16 28,18 42,10 56,13 70,6 84,8 100,3" stroke="#059669" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round" />
+            <polyline points="0,22 14,16 28,18 42,10 56,13 70,6 84,8 100,3 100,32 0,32" fill="rgba(5,150,105,.06)" />
+          </svg>
+          <p class="text-right font-semibold text-ink" style="font-family:'JetBrains Mono',monospace;font-size:15px">
+            ₹1,678.90</p>
+          <div class="text-right"><span class="inline-flex items-center justify-end gap-1 text-bull"
+              style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600"><svg width="10" height="10"
+                viewBox="0 0 10 10" fill="#059669">
+                <path d="M5 1l4 8H1z" />
+              </svg>0.88%</span></div>
+          <div class="flex justify-end"><button
+              class="text-brand bg-brand-light hover:bg-brand hover:text-white px-3 py-1.5 rounded-lg transition-all font-semibold"
+              style="font-size:11px">View Details</button></div>
+        </div>
+        <!-- Row: TCS -->
+        <div class="mkt-row grid items-center px-6 py-4 border-b border-surface-border cursor-pointer"
+          style="grid-template-columns:220px 1fr 130px 100px 110px">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0"
+              style="background:linear-gradient(135deg,#DC2626,#F87171);font-size:10px;font-weight:800">TCS</div>
+            <div>
+              <p class="font-semibold text-ink" style="font-size:14px">TCS</p>
+              <p class="text-ink-muted" style="font-size:11px">Tata Consultancy Services</p>
+            </div>
+          </div>
+          <svg viewBox="0 0 100 32" fill="none" class="w-28">
+            <polyline points="0,6 14,9 28,7 42,13 56,16 70,20 84,22 100,27" stroke="#DC2626" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round" />
+            <polyline points="0,6 14,9 28,7 42,13 56,16 70,20 84,22 100,27 100,32 0,32" fill="rgba(220,38,38,.06)" />
+          </svg>
+          <p class="text-right font-semibold text-ink" style="font-family:'JetBrains Mono',monospace;font-size:15px">
+            ₹3,812.00</p>
+          <div class="text-right"><span class="inline-flex items-center justify-end gap-1 text-bear"
+              style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600"><svg width="10" height="10"
+                viewBox="0 0 10 10" fill="#DC2626">
+                <path d="M5 9L1 1h8z" />
+              </svg>0.55%</span></div>
+          <div class="flex justify-end"><button
+              class="text-brand bg-brand-light hover:bg-brand hover:text-white px-3 py-1.5 rounded-lg transition-all font-semibold"
+              style="font-size:11px">View Details</button></div>
+        </div>
+        <!-- Row: INFY -->
+        <div class="mkt-row grid items-center px-6 py-4 border-b border-surface-border cursor-pointer"
+          style="grid-template-columns:220px 1fr 130px 100px 110px">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0"
+              style="background:linear-gradient(135deg,#7C3AED,#A78BFA);font-size:10px;font-weight:800">INF</div>
+            <div>
+              <p class="font-semibold text-ink" style="font-size:14px">INFY</p>
+              <p class="text-ink-muted" style="font-size:11px">Infosys Ltd.</p>
+            </div>
+          </div>
+          <svg viewBox="0 0 100 32" fill="none" class="w-28">
+            <polyline points="0,5 14,9 28,7 42,14 56,17 70,22 84,24 100,29" stroke="#DC2626" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round" />
+            <polyline points="0,5 14,9 28,7 42,14 56,17 70,22 84,24 100,29 100,32 0,32" fill="rgba(220,38,38,.06)" />
+          </svg>
+          <p class="text-right font-semibold text-ink" style="font-family:'JetBrains Mono',monospace;font-size:15px">
+            ₹1,423.70</p>
+          <div class="text-right"><span class="inline-flex items-center justify-end gap-1 text-bear"
+              style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600"><svg width="10" height="10"
+                viewBox="0 0 10 10" fill="#DC2626">
+                <path d="M5 9L1 1h8z" />
+              </svg>0.43%</span></div>
+          <div class="flex justify-end"><button
+              class="text-brand bg-brand-light hover:bg-brand hover:text-white px-3 py-1.5 rounded-lg transition-all font-semibold"
+              style="font-size:11px">View Details</button></div>
+        </div>
+        <!-- Row: WIPRO -->
+        <div class="mkt-row grid items-center px-6 py-4 border-b border-surface-border cursor-pointer"
+          style="grid-template-columns:220px 1fr 130px 100px 110px">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0"
+              style="background:linear-gradient(135deg,#F59E0B,#FCD34D);font-size:10px;font-weight:800;color:#78350F">
+              WIP</div>
+            <div>
+              <p class="font-semibold text-ink" style="font-size:14px">WIPRO</p>
+              <p class="text-ink-muted" style="font-size:11px">Wipro Ltd.</p>
+            </div>
+          </div>
+          <svg viewBox="0 0 100 32" fill="none" class="w-28">
+            <polyline points="0,26 14,20 28,22 42,14 56,16 70,9 84,11 100,5" stroke="#059669" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round" />
+            <polyline points="0,26 14,20 28,22 42,14 56,16 70,9 84,11 100,5 100,32 0,32" fill="rgba(5,150,105,.06)" />
+          </svg>
+          <p class="text-right font-semibold text-ink" style="font-family:'JetBrains Mono',monospace;font-size:15px">
+            ₹483.60</p>
+          <div class="text-right"><span class="inline-flex items-center justify-end gap-1 text-bull"
+              style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600"><svg width="10" height="10"
+                viewBox="0 0 10 10" fill="#059669">
+                <path d="M5 1l4 8H1z" />
+              </svg>0.65%</span></div>
+          <div class="flex justify-end"><button
+              class="text-brand bg-brand-light hover:bg-brand hover:text-white px-3 py-1.5 rounded-lg transition-all font-semibold"
+              style="font-size:11px">View Details</button></div>
+        </div>
+        <!-- Row: ICICIBANK -->
+        <div class="mkt-row grid items-center px-6 py-4 cursor-pointer"
+          style="grid-template-columns:220px 1fr 130px 100px 110px">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0"
+              style="background:linear-gradient(135deg,#0EA5E9,#22D3EE);font-size:10px;font-weight:800">ICI</div>
+            <div>
+              <p class="font-semibold text-ink" style="font-size:14px">ICICIBANK</p>
+              <p class="text-ink-muted" style="font-size:11px">ICICI Bank Ltd.</p>
+            </div>
+          </div>
+          <svg viewBox="0 0 100 32" fill="none" class="w-28">
+            <polyline points="0,28 14,22 28,24 42,15 56,17 70,10 84,12 100,6" stroke="#059669" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round" />
+            <polyline points="0,28 14,22 28,24 42,15 56,17 70,10 84,12 100,6 100,32 0,32" fill="rgba(5,150,105,.06)" />
+          </svg>
+          <p class="text-right font-semibold text-ink" style="font-family:'JetBrains Mono',monospace;font-size:15px">
+            ₹1,092.40</p>
+          <div class="text-right"><span class="inline-flex items-center justify-end gap-1 text-bull"
+              style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600"><svg width="10" height="10"
+                viewBox="0 0 10 10" fill="#059669">
+                <path d="M5 1l4 8H1z" />
+              </svg>1.05%</span></div>
+          <div class="flex justify-end"><button
+              class="text-brand bg-brand-light hover:bg-brand hover:text-white px-3 py-1.5 rounded-lg transition-all font-semibold"
+              style="font-size:11px">View Details</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ WHAT WE OFFER ════════════════════ -->
+ <section id="strategy" class="bg-ink py-20 reveal">
+  <div class="max-w-7xl mx-auto px-5">
+
+    <span class="block text-blue-400 mb-3" style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase">
+      What We Offer
+    </span>
+
+    <h2 class="text-white mb-3" style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(26px,4vw,40px);font-weight:800;line-height:1.12;letter-spacing:-.02em">
+      Tools Built for<br/>Retail Traders
+    </h2>
+
+    <p class="text-slate-400 mb-10 max-w-md" style="font-size:15px;line-height:1.8;font-weight:300">
+      Simple, powerful features that help you act at the right moment — without spending hours monitoring charts.
+    </p>
+
+    <!-- FEATURE CARDS -->
+    <div class="grid md:grid-cols-2 gap-6">
+
+      <!-- ORB CARD -->
+      <div class="rounded-2xl p-7 transition-all hover:-translate-y-1 hover:border-blue-400/40"
+           style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)">
+
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5"
+             style="background:rgba(91,159,255,.15)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5B9FFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/>
+          </svg>
+        </div>
+
+        <h3 class="text-white mb-3" style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700">
+          ORB Strategy Alerts
+        </h3>
+
+        <p class="text-slate-400" style="font-size:14px;line-height:1.8">
+          When a stock breaks above or below its first 15-minute candle range, you receive an instant push alert — act before the momentum fades.
+        </p>
+
+        <span class="inline-block mt-4 text-blue-400 rounded-full"
+              style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:rgba(91,159,255,.12);padding:4px 12px">
+          Real-Time Alerts
+        </span>
+
+      </div>
+
+      <!-- IPO CARD -->
+      <div class="rounded-2xl p-7 transition-all hover:-translate-y-1"
+           style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)">
+
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-5"
+             style="background:rgba(251,191,36,.12)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 6v6l4 2"/>
+          </svg>
+        </div>
+
+        <h3 class="text-white mb-3" style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700">
+          IPO Recommendation System
+        </h3>
+
+        <p class="text-slate-400" style="font-size:14px;line-height:1.8">
+          Every upcoming IPO analysed for financials, GMP, subscription data and sector outlook — a clear Invest / Avoid verdict, every time.
+        </p>
+
+        <span class="inline-block mt-4 text-amber-400 rounded-full"
+              style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:rgba(251,191,36,.1);padding:4px 12px">
+          Curated Analysis
+        </span>
+
+      </div>
+
+    </div>
+
   </div>
 </section>
 
-<!-- ═══════════════════════════ CONTACT ══════════════════════════ -->
-<section id="contact" class="py-20 reveal">
-  <div class="max-w-7xl mx-auto px-5">
-    <div class="mb-12">
-      <span class="block text-brand mb-2" style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase">Get In Touch</span>
-      <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(26px,4vw,38px);font-weight:800;color:#0C1220;line-height:1.15;letter-spacing:-.015em">Contact Us</h2>
-      <p class="text-ink-muted mt-2.5 max-w-md" style="font-size:15px;line-height:1.75">Questions about our platform? We'd love to hear from you.</p>
-    </div>
-    <div class="grid lg:grid-cols-[380px_1fr] gap-14 items-start">
-      <div class="flex flex-col gap-6">
-        <div class="flex items-start gap-4">
-          <div class="w-11 h-11 rounded-xl bg-brand-light flex items-center justify-center shrink-0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0057FF" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
-          <div><p class="text-ink-muted mb-0.5" style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">Email</p><p class="font-medium text-ink" style="font-size:15px"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="543c3138383b143935263f312024213827317a3d3a">[email&#160;protected]</a></p></div>
-        </div>
-        <div class="flex items-start gap-4">
-          <div class="w-11 h-11 rounded-xl bg-brand-light flex items-center justify-center shrink-0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0057FF" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
-          <div><p class="text-ink-muted mb-0.5" style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">Phone</p><p class="font-medium text-ink" style="font-size:15px">+91 98765 43210</p></div>
-        </div>
-        <div class="flex items-start gap-4">
-          <div class="w-11 h-11 rounded-xl bg-brand-light flex items-center justify-center shrink-0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0057FF" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
-          <div><p class="text-ink-muted mb-0.5" style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">Office</p><p class="font-medium text-ink" style="font-size:15px">Bandra Kurla Complex, Mumbai</p></div>
-        </div>
-        <div class="grid grid-cols-2 gap-4 mt-2">
-          <div class="bg-white border border-surface-border rounded-xl p-5 text-center">
-            <p style="font-family:'Bricolage Grotesque',sans-serif;font-size:30px;font-weight:800;color:#0057FF;line-height:1">12K+</p>
-            <p class="text-ink-muted mt-1.5" style="font-size:12px">Active Users</p>
-          </div>
-          <div class="bg-white border border-surface-border rounded-xl p-5 text-center">
-            <p style="font-family:'Bricolage Grotesque',sans-serif;font-size:30px;font-weight:800;color:#059669;line-height:1">94%</p>
-            <p class="text-ink-muted mt-1.5" style="font-size:12px">Alert Accuracy</p>
+  <!-- ═══════════════════════════ TESTIMONIALS ═════════════════════ -->
+  <section class="py-20 reveal">
+    <div class="max-w-7xl mx-auto px-5">
+      <div class="mb-12">
+        <span class="block text-brand mb-2"
+          style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase">User Feedback</span>
+        <h2
+          style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(26px,4vw,38px);font-weight:800;color:#0C1220;line-height:1.15;letter-spacing:-.015em">
+          Trusted by Traders</h2>
+        <p class="text-ink-muted mt-2.5 max-w-md" style="font-size:15px;line-height:1.75">Hear how EdgeTrade helps
+          retail investors make smarter, faster decisions every day.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="bg-white border border-surface-border rounded-2xl p-7 clift flex flex-col gap-4">
+          <div class="text-gold" style="font-size:15px;letter-spacing:3px">★★★★★</div>
+          <p class="text-ink flex-1" style="font-size:14.5px;line-height:1.8"><span
+              style="color:#0057FF;font-size:28px;font-family:Georgia;line-height:0;vertical-align:-10px;margin-right:2px">"</span>The
+            ORB alerts are a game-changer. I used to miss breakouts. Now I get a notification and act immediately.</p>
+          <div class="flex items-center gap-3 pt-3 border-t border-surface-border">
+            <div class="w-9 h-9 rounded-full flex items-center justify-center text-white shrink-0"
+              style="background:linear-gradient(135deg,#0057FF,#38BDF8);font-size:12px;font-weight:700">AK</div>
+            <div>
+              <p class="font-semibold text-ink" style="font-size:13px">Arjun Kapoor</p>
+              <p class="text-ink-muted" style="font-size:11px">Positional Trader · Mumbai</p>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="bg-white border border-surface-border rounded-2xl p-8">
-        <h3 class="mb-6 text-ink" style="font-family:'Bricolage Grotesque',sans-serif;font-size:20px;font-weight:800">Send a Message</h3>
-        <div class="grid grid-cols-2 gap-4 mb-4">
-          <div><label class="block font-semibold text-ink mb-1.5" style="font-size:13px">First Name</label><input type="text" placeholder="Arjun" class="w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-2.5 text-ink transition-all" style="font-size:14px"/></div>
-          <div><label class="block font-semibold text-ink mb-1.5" style="font-size:13px">Last Name</label><input type="text" placeholder="Kapoor" class="w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-2.5 text-ink transition-all" style="font-size:14px"/></div>
+        <div class="bg-white border border-surface-border rounded-2xl p-7 clift flex flex-col gap-4">
+          <div class="text-gold" style="font-size:15px;letter-spacing:3px">★★★★★</div>
+          <p class="text-ink flex-1" style="font-size:14.5px;line-height:1.8"><span
+              style="color:#0057FF;font-size:28px;font-family:Georgia;line-height:0;vertical-align:-10px;margin-right:2px">"</span>Their
+            IPO analysis saved me from a bad allotment. Recommendation was spot on — 35% premium on listing day!</p>
+          <div class="flex items-center gap-3 pt-3 border-t border-surface-border">
+            <div class="w-9 h-9 rounded-full flex items-center justify-center text-white shrink-0"
+              style="background:linear-gradient(135deg,#059669,#34D399);font-size:12px;font-weight:700">PS</div>
+            <div>
+              <p class="font-semibold text-ink" style="font-size:13px">Priya Sharma</p>
+              <p class="text-ink-muted" style="font-size:11px">Long-term Investor · Pune</p>
+            </div>
+          </div>
         </div>
-        <div class="mb-4"><label class="block font-semibold text-ink mb-1.5" style="font-size:13px">Email Address</label><input type="email" placeholder="you@email.com" class="w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-2.5 text-ink transition-all" style="font-size:14px"/></div>
-        <div class="mb-4"><label class="block font-semibold text-ink mb-1.5" style="font-size:13px">Subject</label><input type="text" placeholder="How can we help?" class="w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-2.5 text-ink transition-all" style="font-size:14px"/></div>
-        <div class="mb-6"><label class="block font-semibold text-ink mb-1.5" style="font-size:13px">Message</label><textarea rows="4" placeholder="Tell us more…" class="w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-2.5 text-ink transition-all resize-y" style="font-size:14px"></textarea></div>
-        <button id="submitBtn" class="w-full py-3.5 bg-brand hover:bg-brand-dark text-white font-semibold rounded-xl transition-all" style="font-size:15px;box-shadow:0 4px 16px rgba(0,87,255,.28)">Send Message →</button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
-<footer class="bg-ink pt-16 pb-8" style="color:rgba(148,163,184,.7)">
-  <div class="max-w-7xl mx-auto px-5">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-14">
-      <div>
-        <div class="flex items-center gap-2.5 mb-4">
-          <div class="w-8 h-8 bg-brand rounded-lg flex items-center justify-center"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="1,14 6,8 10,12 14,5 18,9"/><circle cx="18" cy="4" r="2.2" fill="white" stroke="none"/></svg></div>
-          <span style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:800;color:white">Market<span style="color:#5B9FFF">Pulse</span></span>
-        </div>
-        <p style="font-size:13px;line-height:1.8;color:rgba(148,163,184,.6);max-width:220px">Smart alerts, IPO analysis and market intelligence for India's retail traders.</p>
-      </div>
-      <div>
-        <h4 class="text-slate-300 mb-5" style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase">Platform</h4>
-        <div class="flex flex-col gap-3">
-          <a href="#" class="hover:text-slate-200 transition-colors" style="font-size:13px;color:rgba(148,163,184,.55)">Dashboard</a>
-          <a href="#" class="hover:text-slate-200 transition-colors" style="font-size:13px;color:rgba(148,163,184,.55)">ORB Alerts</a>
-          <a href="#" class="hover:text-slate-200 transition-colors" style="font-size:13px;color:rgba(148,163,184,.55)">IPO Centre</a>
-          <a href="#" class="hover:text-slate-200 transition-colors" style="font-size:13px;color:rgba(148,163,184,.55)">Strategies</a>
-        </div>
-      </div>
-      <div>
-        <h4 class="text-slate-300 mb-5" style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase">Company</h4>
-        <div class="flex flex-col gap-3">
-          <a href="#" class="hover:text-slate-200 transition-colors" style="font-size:13px;color:rgba(148,163,184,.55)">About Us</a>
-          <a href="#" class="hover:text-slate-200 transition-colors" style="font-size:13px;color:rgba(148,163,184,.55)">Blog</a>
-          <a href="#" class="hover:text-slate-200 transition-colors" style="font-size:13px;color:rgba(148,163,184,.55)">Careers</a>
-          <a href="#" class="hover:text-slate-200 transition-colors" style="font-size:13px;color:rgba(148,163,184,.55)">Contact</a>
-        </div>
-      </div>
-      <div>
-        <h4 class="text-slate-300 mb-5" style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase">Legal</h4>
-        <div class="flex flex-col gap-3">
-          <a href="#" class="hover:text-slate-200 transition-colors" style="font-size:13px;color:rgba(148,163,184,.55)">Privacy Policy</a>
-          <a href="#" class="hover:text-slate-200 transition-colors" style="font-size:13px;color:rgba(148,163,184,.55)">Terms of Use</a>
-          <a href="#" class="hover:text-slate-200 transition-colors" style="font-size:13px;color:rgba(148,163,184,.55)">Disclaimer</a>
-          <a href="#" class="hover:text-slate-200 transition-colors" style="font-size:13px;color:rgba(148,163,184,.55)">SEBI Disclosure</a>
+        <div class="bg-white border border-surface-border rounded-2xl p-7 clift flex flex-col gap-4">
+          <div class="text-gold" style="font-size:15px;letter-spacing:3px">★★★★☆</div>
+          <p class="text-ink flex-1" style="font-size:14.5px;line-height:1.8"><span
+              style="color:#0057FF;font-size:28px;font-family:Georgia;line-height:0;vertical-align:-10px;margin-right:2px">"</span>Clean
+            and simple. Other platforms overwhelm me. EdgeTrade shows only what matters, and alerts are fast.</p>
+          <div class="flex items-center gap-3 pt-3 border-t border-surface-border">
+            <div class="w-9 h-9 rounded-full flex items-center justify-center text-white shrink-0"
+              style="background:linear-gradient(135deg,#F59E0B,#FB923C);font-size:12px;font-weight:700">RV</div>
+            <div>
+              <p class="font-semibold text-ink" style="font-size:13px">Rohit Verma</p>
+              <p class="text-ink-muted" style="font-size:11px">Part-time Trader · Bangalore</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="flex flex-wrap justify-between items-center gap-4 pt-7" style="border-top:1px solid rgba(255,255,255,.07)">
-      <p style="font-size:12px;color:rgba(148,163,184,.4)">© 2025 MarketPulse Technologies Pvt. Ltd. · SEBI Registered Research Analyst · All rights reserved.</p>
-      <div class="flex gap-2">
-        <a href="#" class="w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:opacity-80" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(148,163,184,.6)"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
-        <a href="#" class="w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:opacity-80" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(148,163,184,.6)"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></a>
-        <a href="#" class="w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:opacity-80" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(148,163,184,.6)"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21.198 2.433a2.242 2.242 0 0 0-1.022.215l-16.5 6.316a2.229 2.229 0 0 0 .12 4.19l3.444 1.055 1.895 5.96a.863.863 0 0 0 1.518.235l2.358-2.847 3.964 2.932a2.24 2.24 0 0 0 3.432-1.588l2.597-14.7a2.25 2.25 0 0 0-1.806-2.768z"/></svg></a>
+  </section>
+
+  <!-- ═══════════════════════════ WHY CHOOSE US ════════════════════ -->
+  <section class="bg-white py-20 reveal">
+    <div class="max-w-7xl mx-auto px-5">
+      <div class="mb-12">
+        <span class="block text-brand mb-2"
+          style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase">Why EdgeTrade</span>
+        <h2
+          style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(26px,4vw,38px);font-weight:800;color:#0C1220;line-height:1.15;letter-spacing:-.015em">
+          Built for the Modern Trader</h2>
+        <p class="text-ink-muted mt-2.5 max-w-md" style="font-size:15px;line-height:1.75">Every feature reduces time
+          spent monitoring and increases time spent acting.</p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="why-card bg-surface-bg border border-surface-border rounded-2xl p-7 clift">
+          <div class="wicon w-12 h-12 rounded-xl bg-brand-light flex items-center justify-center mb-5"><svg width="22"
+              height="22" viewBox="0 0 24 24" fill="none" stroke="#0057FF" stroke-width="2" stroke-linecap="round">
+              <polyline points="13,2 3,14 12,14 11,22 21,10 12,10 13,2" />
+            </svg></div>
+          <h3 class="font-bold text-ink mb-2" style="font-family:'Bricolage Grotesque',sans-serif;font-size:16px">
+            Real-Time Notifications</h3>
+          <p class="text-ink-muted" style="font-size:13.5px;line-height:1.72">Push alerts the moment a breakout occurs.
+            Never miss a setup because you weren't watching.</p>
+        </div>
+        <div class="why-card bg-surface-bg border border-surface-border rounded-2xl p-7 clift">
+          <div class="wicon w-12 h-12 rounded-xl bg-brand-light flex items-center justify-center mb-5"><svg width="22"
+              height="22" viewBox="0 0 24 24" fill="none" stroke="#0057FF" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
+            </svg></div>
+          <h3 class="font-bold text-ink mb-2" style="font-family:'Bricolage Grotesque',sans-serif;font-size:16px">Simple
+            Strategies</h3>
+          <p class="text-ink-muted" style="font-size:13.5px;line-height:1.72">Proven strategies like ORB translated into
+            clear, actionable signals — no complex theory required.</p>
+        </div>
+        <div class="why-card bg-surface-bg border border-surface-border rounded-2xl p-7 clift">
+          <div class="wicon w-12 h-12 rounded-xl bg-brand-light flex items-center justify-center mb-5"><svg width="22"
+              height="22" viewBox="0 0 24 24" fill="none" stroke="#0057FF" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 6v6l4 2" />
+            </svg></div>
+          <h3 class="font-bold text-ink mb-2" style="font-family:'Bricolage Grotesque',sans-serif;font-size:16px">Saves
+            You Time</h3>
+          <p class="text-ink-muted" style="font-size:13.5px;line-height:1.72">Stop staring at charts. Our scanner alerts
+            you only when something actually matters.</p>
+        </div>
+        <div class="why-card bg-surface-bg border border-surface-border rounded-2xl p-7 clift">
+          <div class="wicon w-12 h-12 rounded-xl bg-brand-light flex items-center justify-center mb-5"><svg width="22"
+              height="22" viewBox="0 0 24 24" fill="none" stroke="#0057FF" stroke-width="2" stroke-linecap="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg></div>
+          <h3 class="font-bold text-ink mb-2" style="font-family:'Bricolage Grotesque',sans-serif;font-size:16px">Built
+            for Retail</h3>
+          <p class="text-ink-muted" style="font-size:13.5px;line-height:1.72">No institutional jargon. Designed for
+            everyday traders who want to compete effectively.</p>
+        </div>
       </div>
     </div>
-  </div>
-</footer>
+  </section>
+
+  <!-- ═══════════════════════════ CONTACT ══════════════════════════ -->
+  <section id="contact" class="py-20 reveal">
+    <div class="max-w-7xl mx-auto px-5">
+      <div class="mb-12">
+        <span class="block text-brand mb-2"
+          style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase">Get In Touch</span>
+        <h2
+          style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(26px,4vw,38px);font-weight:800;color:#0C1220;line-height:1.15;letter-spacing:-.015em">
+          Contact Us</h2>
+        <p class="text-ink-muted mt-2.5 max-w-md" style="font-size:15px;line-height:1.75">Questions about our platform?
+          We'd love to hear from you.</p>
+      </div>
+      <div class="grid lg:grid-cols-[380px_1fr] gap-14 items-start">
+        <div class="flex flex-col gap-6">
+          <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-brand-light flex items-center justify-center shrink-0"><svg width="18"
+                height="18" viewBox="0 0 24 24" fill="none" stroke="#0057FF" stroke-width="2" stroke-linecap="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                <polyline points="22,6 12,13 2,6" />
+              </svg></div>
+            <div>
+              <p class="text-ink-muted mb-0.5"
+                style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">Email</p>
+              <p class="font-medium text-ink" style="font-size:15px"><a href="/cdn-cgi/l/email-protection"
+                  class="__cf_email__"
+                  data-cfemail="543c3138383b143935263f312024213827317a3d3a">[email&#160;protected]</a></p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-brand-light flex items-center justify-center shrink-0"><svg width="18"
+                height="18" viewBox="0 0 24 24" fill="none" stroke="#0057FF" stroke-width="2" stroke-linecap="round">
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg></div>
+            <div>
+              <p class="text-ink-muted mb-0.5"
+                style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">Phone</p>
+              <p class="font-medium text-ink" style="font-size:15px">+91 98765 43210</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-brand-light flex items-center justify-center shrink-0"><svg width="18"
+                height="18" viewBox="0 0 24 24" fill="none" stroke="#0057FF" stroke-width="2" stroke-linecap="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg></div>
+            <div>
+              <p class="text-ink-muted mb-0.5"
+                style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase">Office</p>
+              <p class="font-medium text-ink" style="font-size:15px">Bandra Kurla Complex, Mumbai</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4 mt-2">
+            <div class="bg-white border border-surface-border rounded-xl p-5 text-center">
+              <p
+                style="font-family:'Bricolage Grotesque',sans-serif;font-size:30px;font-weight:800;color:#0057FF;line-height:1">
+                12K+</p>
+              <p class="text-ink-muted mt-1.5" style="font-size:12px">Active Users</p>
+            </div>
+            <div class="bg-white border border-surface-border rounded-xl p-5 text-center">
+              <p
+                style="font-family:'Bricolage Grotesque',sans-serif;font-size:30px;font-weight:800;color:#059669;line-height:1">
+                94%</p>
+              <p class="text-ink-muted mt-1.5" style="font-size:12px">Alert Accuracy</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white border border-surface-border rounded-2xl p-8">
+          <h3 class="mb-6 text-ink" style="font-family:'Bricolage Grotesque',sans-serif;font-size:20px;font-weight:800">
+            Send a Message</h3>
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div><label class="block font-semibold text-ink mb-1.5" style="font-size:13px">First Name</label><input
+                type="text" placeholder="Arjun"
+                class="w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-2.5 text-ink transition-all"
+                style="font-size:14px" /></div>
+            <div><label class="block font-semibold text-ink mb-1.5" style="font-size:13px">Last Name</label><input
+                type="text" placeholder="Kapoor"
+                class="w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-2.5 text-ink transition-all"
+                style="font-size:14px" /></div>
+          </div>
+          <div class="mb-4"><label class="block font-semibold text-ink mb-1.5" style="font-size:13px">Email
+              Address</label><input type="email" placeholder="you@email.com"
+              class="w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-2.5 text-ink transition-all"
+              style="font-size:14px" /></div>
+          <div class="mb-4"><label class="block font-semibold text-ink mb-1.5"
+              style="font-size:13px">Subject</label><input type="text" placeholder="How can we help?"
+              class="w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-2.5 text-ink transition-all"
+              style="font-size:14px" /></div>
+          <div class="mb-6"><label class="block font-semibold text-ink mb-1.5"
+              style="font-size:13px">Message</label><textarea rows="4" placeholder="Tell us more…"
+              class="w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-2.5 text-ink transition-all resize-y"
+              style="font-size:14px"></textarea></div>
+          <button id="submitBtn"
+            class="w-full py-3.5 bg-brand hover:bg-brand-dark text-white font-semibold rounded-xl transition-all"
+            style="font-size:15px;box-shadow:0 4px 16px rgba(0,87,255,.28)">Send Message →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+  <footer class="bg-ink pt-16 pb-8" style="color:rgba(148,163,184,.7)">
+    <div class="max-w-7xl mx-auto px-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-14">
+        <div>
+          <div class="flex items-center gap-2.5 mb-4">
+            <div class="w-8 h-8 bg-brand rounded-lg flex items-center justify-center"><svg width="18" height="18"
+                viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round">
+                <polyline points="1,14 6,8 10,12 14,5 18,9" />
+                <circle cx="18" cy="4" r="2.2" fill="white" stroke="none" />
+              </svg></div>
+            <span
+              style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:800;color:white">Edge<span
+                style="color:#5B9FFF">Trde</span></span>
+          </div>
+          <p style="font-size:13px;line-height:1.8;color:rgba(148,163,184,.6);max-width:220px">Smart alerts, IPO
+            analysis and market intelligence for India's retail traders.</p>
+        </div>
+        <div>
+          <h4 class="text-slate-300 mb-5"
+            style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase">Platform</h4>
+          <div class="flex flex-col gap-3">
+            <a href="#" class="hover:text-slate-200 transition-colors"
+              style="font-size:13px;color:rgba(148,163,184,.55)">Dashboard</a>
+            <a href="#" class="hover:text-slate-200 transition-colors"
+              style="font-size:13px;color:rgba(148,163,184,.55)">ORB Alerts</a>
+            <a href="#" class="hover:text-slate-200 transition-colors"
+              style="font-size:13px;color:rgba(148,163,184,.55)">IPO Centre</a>
+            <a href="#" class="hover:text-slate-200 transition-colors"
+              style="font-size:13px;color:rgba(148,163,184,.55)">Strategies</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="text-slate-300 mb-5"
+            style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase">Company</h4>
+          <div class="flex flex-col gap-3">
+            <a href="#" class="hover:text-slate-200 transition-colors"
+              style="font-size:13px;color:rgba(148,163,184,.55)">About Us</a>
+            <a href="#" class="hover:text-slate-200 transition-colors"
+              style="font-size:13px;color:rgba(148,163,184,.55)">Blog</a>
+            <a href="#" class="hover:text-slate-200 transition-colors"
+              style="font-size:13px;color:rgba(148,163,184,.55)">Careers</a>
+            <a href="#" class="hover:text-slate-200 transition-colors"
+              style="font-size:13px;color:rgba(148,163,184,.55)">Contact</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="text-slate-300 mb-5"
+            style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase">Legal</h4>
+          <div class="flex flex-col gap-3">
+            <a href="#" class="hover:text-slate-200 transition-colors"
+              style="font-size:13px;color:rgba(148,163,184,.55)">Privacy Policy</a>
+            <a href="#" class="hover:text-slate-200 transition-colors"
+              style="font-size:13px;color:rgba(148,163,184,.55)">Terms of Use</a>
+            <a href="#" class="hover:text-slate-200 transition-colors"
+              style="font-size:13px;color:rgba(148,163,184,.55)">Disclaimer</a>
+            <a href="#" class="hover:text-slate-200 transition-colors"
+              style="font-size:13px;color:rgba(148,163,184,.55)">SEBI Disclosure</a>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-wrap justify-between items-center gap-4 pt-7"
+        style="border-top:1px solid rgba(255,255,255,.07)">
+        <p style="font-size:12px;color:rgba(148,163,184,.4)">© 2025 EdgeTrade Technologies Pvt. Ltd. · SEBI Registered
+          Research Analyst · All rights reserved.</p>
+        <div class="flex gap-2">
+          <a href="#" class="w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:opacity-80"
+            style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(148,163,184,.6)"><svg
+              width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg></a>
+          <a href="#" class="w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:opacity-80"
+            style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(148,163,184,.6)"><svg
+              width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z" />
+              <circle cx="4" cy="4" r="2" />
+            </svg></a>
+          <a href="#" class="w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:opacity-80"
+            style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(148,163,184,.6)"><svg
+              width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M21.198 2.433a2.242 2.242 0 0 0-1.022.215l-16.5 6.316a2.229 2.229 0 0 0 .12 4.19l3.444 1.055 1.895 5.96a.863.863 0 0 0 1.518.235l2.358-2.847 3.964 2.932a2.24 2.24 0 0 0 3.432-1.588l2.597-14.7a2.25 2.25 0 0 0-1.806-2.768z" />
+            </svg></a>
+        </div>
+      </div>
+    </div>
+  </footer>
 
 
-<!-- ════════════════════════════════════════════════════════════════
+  <!-- ════════════════════════════════════════════════════════════════
      AUTH MODAL  (Tickertape-style split panel)
 ═════════════════════════════════════════════════════════════════ -->
-<div id="authModal" onclick="handleModalClick(event)">
-  <div id="authPanel" class="bg-white rounded-2xl overflow-hidden flex w-full max-w-3xl mx-4" style="box-shadow:0 24px 80px rgba(0,0,0,.28);max-height:90vh">
+  <div id="authModal" onclick="handleModalClick(event)">
+    <div id="authPanel" class="bg-white rounded-2xl overflow-hidden flex w-full max-w-3xl mx-4"
+      style="box-shadow:0 24px 80px rgba(0,0,0,.28);max-height:90vh">
 
-    <!-- LEFT — dark brand panel -->
-    <div class="hidden md:flex flex-col justify-between p-10 w-[42%] shrink-0 relative overflow-hidden" style="background:linear-gradient(145deg,#0C1220 0%,#0D1B3E 100%)">
-      <div class="absolute top-0 right-0 w-64 h-64 rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(0,87,255,.2) 0%,transparent 70%);transform:translate(30%,-30%)"></div>
+      <!-- LEFT — dark brand panel -->
+      <div class="hidden md:flex flex-col justify-between p-10 w-[42%] shrink-0 relative overflow-hidden"
+        style="background:linear-gradient(145deg,#0C1220 0%,#0D1B3E 100%)">
+        <div class="absolute top-0 right-0 w-64 h-64 rounded-full pointer-events-none"
+          style="background:radial-gradient(circle,rgba(0,87,255,.2) 0%,transparent 70%);transform:translate(30%,-30%)">
+        </div>
 
-      <!-- Mode-dependent copy -->
-      <div id="leftLogin" class="">
-        <div class="flex items-center gap-2.5 mb-8">
-          <div class="w-8 h-8 bg-brand rounded-lg flex items-center justify-center" style="box-shadow:0 4px 12px rgba(0,87,255,.4)">
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="1,14 6,8 10,12 14,5 18,9"/><circle cx="18" cy="4" r="2.2" fill="white" stroke="none"/></svg>
+        <!-- Mode-dependent copy -->
+        <div id="leftLogin" class="">
+          <div class="flex items-center gap-2.5 mb-8">
+            <div class="w-8 h-8 bg-brand rounded-lg flex items-center justify-center"
+              style="box-shadow:0 4px 12px rgba(0,87,255,.4)">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="2.2"
+                stroke-linecap="round">
+                <polyline points="1,14 6,8 10,12 14,5 18,9" />
+                <circle cx="18" cy="4" r="2.2" fill="white" stroke="none" />
+              </svg>
+            </div>
+            <span
+              style="font-family:'Bricolage Grotesque',sans-serif;font-size:17px;font-weight:800;color:white">Edge<span
+                style="color:#5B9FFF">Trade</span></span>
           </div>
-          <span style="font-family:'Bricolage Grotesque',sans-serif;font-size:17px;font-weight:800;color:white">Market<span style="color:#5B9FFF">Pulse</span></span>
+          <h2
+            style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:white;line-height:1.2;margin-bottom:12px">
+            Welcome back!</h2>
+          <p class="text-slate-400" style="font-size:14px;line-height:1.75">Sign in and continue tracking breakouts, IPO
+            alerts, and market intelligence.</p>
         </div>
-        <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:white;line-height:1.2;margin-bottom:12px">Welcome back!</h2>
-        <p class="text-slate-400" style="font-size:14px;line-height:1.75">Sign in and continue tracking breakouts, IPO alerts, and market intelligence.</p>
-      </div>
-      <div id="leftSignup" class="hidden">
-        <div class="flex items-center gap-2.5 mb-8">
-          <div class="w-8 h-8 bg-brand rounded-lg flex items-center justify-center" style="box-shadow:0 4px 12px rgba(0,87,255,.4)">
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polyline points="1,14 6,8 10,12 14,5 18,9"/><circle cx="18" cy="4" r="2.2" fill="white" stroke="none"/></svg>
+        <div id="leftSignup" class="hidden">
+          <div class="flex items-center gap-2.5 mb-8">
+            <div class="w-8 h-8 bg-brand rounded-lg flex items-center justify-center"
+              style="box-shadow:0 4px 12px rgba(0,87,255,.4)">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="2.2"
+                stroke-linecap="round">
+                <polyline points="1,14 6,8 10,12 14,5 18,9" />
+                <circle cx="18" cy="4" r="2.2" fill="white" stroke="none" />
+              </svg>
+            </div>
+            <span
+              style="font-family:'Bricolage Grotesque',sans-serif;font-size:17px;font-weight:800;color:white">Edge<span
+                style="color:#5B9FFF">Trade</span></span>
           </div>
-          <span style="font-family:'Bricolage Grotesque',sans-serif;font-size:17px;font-weight:800;color:white">Market<span style="color:#5B9FFF">Pulse</span></span>
+          <h2
+            style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:white;line-height:1.2;margin-bottom:12px">
+            Loving EdgeTrade?</h2>
+          <p class="text-slate-400" style="font-size:14px;line-height:1.75">Sign up now and start analysing stocks,
+            tracking IPOs, and receiving real-time ORB alerts.</p>
         </div>
-        <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800;color:white;line-height:1.2;margin-bottom:12px">Loving MarketPulse?</h2>
-        <p class="text-slate-400" style="font-size:14px;line-height:1.75">Sign up now and start analysing stocks, tracking IPOs, and receiving real-time ORB alerts.</p>
+
+        <!-- Mini dashboard preview -->
+        <div class="mt-8 rounded-xl overflow-hidden border"
+          style="border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.04)">
+          <div class="px-4 pt-3 pb-2 border-b flex items-center gap-2" style="border-color:rgba(255,255,255,.08)">
+            <div class="w-2 h-2 rounded-full bg-red-400 opacity-60"></div>
+            <div class="w-2 h-2 rounded-full bg-yellow-400 opacity-60"></div>
+            <div class="w-2 h-2 rounded-full bg-green-400 opacity-60"></div>
+            <span class="text-slate-600 ml-2" style="font-size:10px">EdgeTrade.in</span>
+          </div>
+          <div class="p-4">
+            <p class="text-slate-500 mb-3"
+              style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase">Portfolio Overview</p>
+            <svg viewBox="0 0 200 60" fill="none" class="w-full mb-3">
+              <polyline points="0,50 25,40 45,44 70,28 90,32 115,18 140,22 165,12 200,6" stroke="#34D399"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              <polyline points="0,50 25,40 45,44 70,28 90,32 115,18 140,22 165,12 200,6 200,60 0,60"
+                fill="rgba(52,211,153,.08)" />
+            </svg>
+            <div class="flex gap-3">
+              <div class="flex-1 rounded-lg p-2.5"
+                style="background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.15)">
+                <p class="text-slate-500"
+                  style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">NIFTY 50</p>
+                <p style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:white">22,458</p>
+                <p style="font-size:10px;color:#34D399;font-weight:600">▲ 0.74%</p>
+              </div>
+              <div class="flex-1 rounded-lg p-2.5"
+                style="background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.15)">
+                <p class="text-slate-500"
+                  style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">BANK</p>
+                <p style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:white">48,201</p>
+                <p style="font-size:10px;color:#F87171;font-weight:600">▼ 0.32%</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Mini dashboard preview -->
-      <div class="mt-8 rounded-xl overflow-hidden border" style="border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.04)">
-        <div class="px-4 pt-3 pb-2 border-b flex items-center gap-2" style="border-color:rgba(255,255,255,.08)">
-          <div class="w-2 h-2 rounded-full bg-red-400 opacity-60"></div>
-          <div class="w-2 h-2 rounded-full bg-yellow-400 opacity-60"></div>
-          <div class="w-2 h-2 rounded-full bg-green-400 opacity-60"></div>
-          <span class="text-slate-600 ml-2" style="font-size:10px">marketpulse.in</span>
-        </div>
-        <div class="p-4">
-          <p class="text-slate-500 mb-3" style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase">Portfolio Overview</p>
-          <svg viewBox="0 0 200 60" fill="none" class="w-full mb-3">
-            <polyline points="0,50 25,40 45,44 70,28 90,32 115,18 140,22 165,12 200,6" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <polyline points="0,50 25,40 45,44 70,28 90,32 115,18 140,22 165,12 200,6 200,60 0,60" fill="rgba(52,211,153,.08)"/>
+      <!-- RIGHT — form panel -->
+      <div class="flex-1 p-8 relative overflow-y-auto">
+        <!-- Close btn -->
+        <button onclick="closeAuth()"
+          class="absolute top-5 right-5 w-8 h-8 rounded-full bg-surface-bg hover:bg-surface-border flex items-center justify-center transition-colors text-ink-muted hover:text-ink">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
-          <div class="flex gap-3">
-            <div class="flex-1 rounded-lg p-2.5" style="background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.15)">
-              <p class="text-slate-500" style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">NIFTY 50</p>
-              <p style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:white">22,458</p>
-              <p style="font-size:10px;color:#34D399;font-weight:600">▲ 0.74%</p>
+        </button>
+
+        <!-- Tab toggle: Login / Sign Up -->
+        <div class="flex gap-1 bg-surface-bg p-1 rounded-xl mb-8 w-fit">
+          <button id="tabLogin" onclick="switchTab('login')" class="auth-tab active">Log In</button>
+          <button id="tabSignup" onclick="switchTab('signup')" class="auth-tab">Sign Up</button>
+        </div>
+
+        <!-- Phone step -->
+        <div id="phoneStep">
+          <h3 id="formTitle" class="mb-1"
+            style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:800;color:#0C1220">Enter your
+            phone number</h3>
+          <p id="formSub" class="text-ink-muted mb-7" style="font-size:14px">We'll send a 6-digit OTP to verify your
+            number.</p>
+
+          <!-- Name fields (signup only) -->
+          <div id="nameFields" class="hidden grid grid-cols-2 gap-3 mb-4">
+            <div>
+              <label class="block font-semibold text-ink mb-1.5" style="font-size:13px">First Name</label>
+              <input type="text" placeholder="Arjun"
+                class="w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-3 text-ink transition-all"
+                style="font-size:14px" />
             </div>
-            <div class="flex-1 rounded-lg p-2.5" style="background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.15)">
-              <p class="text-slate-500" style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em">BANK</p>
-              <p style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:white">48,201</p>
-              <p style="font-size:10px;color:#F87171;font-weight:600">▼ 0.32%</p>
+            <div>
+              <label class="block font-semibold text-ink mb-1.5" style="font-size:13px">Last Name</label>
+              <input type="text" placeholder="Kapoor"
+                class="w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-3 text-ink transition-all"
+                style="font-size:14px" />
             </div>
           </div>
+
+          <!-- Phone row -->
+          <label class="block font-semibold text-ink mb-2" style="font-size:13px">Phone Number</label>
+          <div class="flex gap-2 mb-5">
+            <!-- Country selector -->
+            <div
+              class="flex items-center gap-2 bg-surface-bg border border-surface-border rounded-lg px-3 py-3 cursor-pointer hover:border-slate-400 transition-all shrink-0">
+              <span style="font-size:18px">🇮🇳</span>
+              <span class="font-semibold text-ink" style="font-size:14px">+91</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2.5">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </div>
+            <input id="phoneInput" type="tel" placeholder="Enter phone number"
+              class="flex-1 bg-surface-bg border border-surface-border rounded-lg px-4 py-3 text-ink transition-all"
+              style="font-size:15px" maxlength="10" />
+          </div>
+
+          <!-- Email (signup only) -->
+          <div id="emailField" class="hidden mb-4">
+            <label class="block font-semibold text-ink mb-1.5" style="font-size:13px">Email Address <span
+                class="text-ink-subtle font-normal">(optional)</span></label>
+            <input type="email" placeholder="you@email.com"
+              class="w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-3 text-ink transition-all"
+              style="font-size:14px" />
+          </div>
+
+          <button onclick="goToOtp()"
+            class="w-full py-3.5 font-semibold text-white bg-brand hover:bg-brand-dark rounded-xl transition-all mb-4"
+            style="font-size:15px;box-shadow:0 4px 16px rgba(0,87,255,.28)">Get OTP</button>
+          <p class="text-ink-muted text-center" style="font-size:12px">By continuing, you agree to our <a href="#"
+              class="text-brand hover:underline font-medium">Terms &amp; Conditions</a></p>
+
+          <!-- Divider -->
+          <div class="flex items-center gap-3 my-5">
+            <div class="flex-1 h-px bg-surface-border"></div>
+            <span class="text-ink-subtle" style="font-size:12px;font-weight:500">or continue with</span>
+            <div class="flex-1 h-px bg-surface-border"></div>
+          </div>
+
+          <!-- Social login -->
+          <div class="grid grid-cols-2 gap-3">
+            <button
+              class="flex items-center justify-center gap-2.5 bg-surface-bg hover:bg-surface-border border border-surface-border rounded-xl py-3 transition-all font-semibold text-ink"
+              style="font-size:13px">
+              <svg width="18" height="18" viewBox="0 0 24 24">
+                <path
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                  fill="#4285F4" />
+                <path
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                  fill="#34A853" />
+                <path
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                  fill="#FBBC05" />
+                <path
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                  fill="#EA4335" />
+              </svg>
+              Google
+            </button>
+            <button
+              class="flex items-center justify-center gap-2.5 bg-surface-bg hover:bg-surface-border border border-surface-border rounded-xl py-3 transition-all font-semibold text-ink"
+              style="font-size:13px">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+              </svg>
+              Facebook
+            </button>
+          </div>
         </div>
-      </div>
+
+        <!-- OTP step -->
+        <div id="otpStep">
+          <div class="flex items-center gap-3 mb-6">
+            <button onclick="backToPhone()"
+              class="w-8 h-8 rounded-full bg-surface-bg hover:bg-surface-border flex items-center justify-center transition-colors">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2.5"
+                stroke-linecap="round">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
+            <div>
+              <h3 style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:800;color:#0C1220">
+                Enter OTP</h3>
+              <p class="text-ink-muted" style="font-size:13px">Sent to +91 <span id="displayPhone"
+                  class="font-semibold text-ink">98765 43210</span></p>
+            </div>
+          </div>
+
+          <!-- 6-digit OTP inputs -->
+          <div class="flex gap-2.5 mb-6" id="otpBoxes">
+            <input type="text" maxlength="1" class="otp-input" oninput="otpNext(this,0)" onkeydown="otpBack(event,0)" />
+            <input type="text" maxlength="1" class="otp-input" oninput="otpNext(this,1)" onkeydown="otpBack(event,1)" />
+            <input type="text" maxlength="1" class="otp-input" oninput="otpNext(this,2)" onkeydown="otpBack(event,2)" />
+            <input type="text" maxlength="1" class="otp-input" oninput="otpNext(this,3)" onkeydown="otpBack(event,3)" />
+            <input type="text" maxlength="1" class="otp-input" oninput="otpNext(this,4)" onkeydown="otpBack(event,4)" />
+            <input type="text" maxlength="1" class="otp-input" oninput="otpNext(this,5)" onkeydown="otpBack(event,5)" />
+          </div>
+
+          <button onclick="verifyOtp()"
+            class="w-full py-3.5 font-semibold text-white bg-brand hover:bg-brand-dark rounded-xl transition-all mb-4"
+            style="font-size:15px;box-shadow:0 4px 16px rgba(0,87,255,.28)">Verify & Continue</button>
+
+          <p class="text-center text-ink-muted" style="font-size:13px">Didn't receive it? <button
+              onclick="backToPhone()" class="text-brand font-semibold hover:underline">Resend OTP</button></p>
+
+          <!-- Timer -->
+          <p class="text-center text-ink-subtle mt-2" style="font-size:12px">Resend available in <span id="otpTimer"
+              class="font-semibold text-ink">30s</span></p>
+        </div>
+
+      </div><!-- /right panel -->
     </div>
-
-    <!-- RIGHT — form panel -->
-    <div class="flex-1 p-8 relative overflow-y-auto">
-      <!-- Close btn -->
-      <button onclick="closeAuth()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-surface-bg hover:bg-surface-border flex items-center justify-center transition-colors text-ink-muted hover:text-ink">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-
-      <!-- Tab toggle: Login / Sign Up -->
-      <div class="flex gap-1 bg-surface-bg p-1 rounded-xl mb-8 w-fit">
-        <button id="tabLogin"  onclick="switchTab('login')"  class="auth-tab active">Log In</button>
-        <button id="tabSignup" onclick="switchTab('signup')" class="auth-tab">Sign Up</button>
-      </div>
-
-      <!-- Phone step -->
-      <div id="phoneStep">
-        <h3 id="formTitle" class="mb-1" style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:800;color:#0C1220">Enter your phone number</h3>
-        <p id="formSub" class="text-ink-muted mb-7" style="font-size:14px">We'll send a 6-digit OTP to verify your number.</p>
-
-        <!-- Name fields (signup only) -->
-        <div id="nameFields" class="hidden grid grid-cols-2 gap-3 mb-4">
-          <div>
-            <label class="block font-semibold text-ink mb-1.5" style="font-size:13px">First Name</label>
-            <input type="text" placeholder="Arjun" class="w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-3 text-ink transition-all" style="font-size:14px"/>
-          </div>
-          <div>
-            <label class="block font-semibold text-ink mb-1.5" style="font-size:13px">Last Name</label>
-            <input type="text" placeholder="Kapoor" class="w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-3 text-ink transition-all" style="font-size:14px"/>
-          </div>
-        </div>
-
-        <!-- Phone row -->
-        <label class="block font-semibold text-ink mb-2" style="font-size:13px">Phone Number</label>
-        <div class="flex gap-2 mb-5">
-          <!-- Country selector -->
-          <div class="flex items-center gap-2 bg-surface-bg border border-surface-border rounded-lg px-3 py-3 cursor-pointer hover:border-slate-400 transition-all shrink-0">
-            <span style="font-size:18px">🇮🇳</span>
-            <span class="font-semibold text-ink" style="font-size:14px">+91</span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-          </div>
-          <input id="phoneInput" type="tel" placeholder="Enter phone number" class="flex-1 bg-surface-bg border border-surface-border rounded-lg px-4 py-3 text-ink transition-all" style="font-size:15px" maxlength="10"/>
-        </div>
-
-        <!-- Email (signup only) -->
-        <div id="emailField" class="hidden mb-4">
-          <label class="block font-semibold text-ink mb-1.5" style="font-size:13px">Email Address <span class="text-ink-subtle font-normal">(optional)</span></label>
-          <input type="email" placeholder="you@email.com" class="w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-3 text-ink transition-all" style="font-size:14px"/>
-        </div>
-
-        <button onclick="goToOtp()" class="w-full py-3.5 font-semibold text-white bg-brand hover:bg-brand-dark rounded-xl transition-all mb-4" style="font-size:15px;box-shadow:0 4px 16px rgba(0,87,255,.28)">Get OTP</button>
-        <p class="text-ink-muted text-center" style="font-size:12px">By continuing, you agree to our <a href="#" class="text-brand hover:underline font-medium">Terms &amp; Conditions</a></p>
-
-        <!-- Divider -->
-        <div class="flex items-center gap-3 my-5">
-          <div class="flex-1 h-px bg-surface-border"></div>
-          <span class="text-ink-subtle" style="font-size:12px;font-weight:500">or continue with</span>
-          <div class="flex-1 h-px bg-surface-border"></div>
-        </div>
-
-        <!-- Social login -->
-        <div class="grid grid-cols-2 gap-3">
-          <button class="flex items-center justify-center gap-2.5 bg-surface-bg hover:bg-surface-border border border-surface-border rounded-xl py-3 transition-all font-semibold text-ink" style="font-size:13px">
-            <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-            Google
-          </button>
-          <button class="flex items-center justify-center gap-2.5 bg-surface-bg hover:bg-surface-border border border-surface-border rounded-xl py-3 transition-all font-semibold text-ink" style="font-size:13px">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-            Facebook
-          </button>
-        </div>
-      </div>
-
-      <!-- OTP step -->
-      <div id="otpStep">
-        <div class="flex items-center gap-3 mb-6">
-          <button onclick="backToPhone()" class="w-8 h-8 rounded-full bg-surface-bg hover:bg-surface-border flex items-center justify-center transition-colors">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-          </button>
-          <div>
-            <h3 style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:800;color:#0C1220">Enter OTP</h3>
-            <p class="text-ink-muted" style="font-size:13px">Sent to +91 <span id="displayPhone" class="font-semibold text-ink">98765 43210</span></p>
-          </div>
-        </div>
-
-        <!-- 6-digit OTP inputs -->
-        <div class="flex gap-2.5 mb-6" id="otpBoxes">
-          <input type="text" maxlength="1" class="otp-input" oninput="otpNext(this,0)" onkeydown="otpBack(event,0)"/>
-          <input type="text" maxlength="1" class="otp-input" oninput="otpNext(this,1)" onkeydown="otpBack(event,1)"/>
-          <input type="text" maxlength="1" class="otp-input" oninput="otpNext(this,2)" onkeydown="otpBack(event,2)"/>
-          <input type="text" maxlength="1" class="otp-input" oninput="otpNext(this,3)" onkeydown="otpBack(event,3)"/>
-          <input type="text" maxlength="1" class="otp-input" oninput="otpNext(this,4)" onkeydown="otpBack(event,4)"/>
-          <input type="text" maxlength="1" class="otp-input" oninput="otpNext(this,5)" onkeydown="otpBack(event,5)"/>
-        </div>
-
-        <button onclick="verifyOtp()" class="w-full py-3.5 font-semibold text-white bg-brand hover:bg-brand-dark rounded-xl transition-all mb-4" style="font-size:15px;box-shadow:0 4px 16px rgba(0,87,255,.28)">Verify & Continue</button>
-
-        <p class="text-center text-ink-muted" style="font-size:13px">Didn't receive it? <button onclick="backToPhone()" class="text-brand font-semibold hover:underline">Resend OTP</button></p>
-
-        <!-- Timer -->
-        <p class="text-center text-ink-subtle mt-2" style="font-size:12px">Resend available in <span id="otpTimer" class="font-semibold text-ink">30s</span></p>
-      </div>
-
-    </div><!-- /right panel -->
   </div>
-</div>
 
 
-<!-- ═══════════════════════ SCRIPTS ══════════════════════════════ -->
-<script>
-// ── Scroll reveal ─────────────────────────────────────────────
-const obs = new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')})},{threshold:.06});
-document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  <!-- ═══════════════════════ SCRIPTS ══════════════════════════════ -->
+  <script>
+    // ── Scroll reveal ─────────────────────────────────────────────
+    const obs = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) e.target.classList.add('in') }) }, { threshold: .06 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
-// ── Stock tabs ────────────────────────────────────────────────
-function activateTab(btn){
-  document.querySelectorAll('.stock-tab').forEach(b=>{
-    b.classList.remove('bg-white','text-ink','shadow-card');
-    b.classList.add('text-ink-muted');
-  });
-  btn.classList.add('bg-white','text-ink','shadow-card');
-  btn.classList.remove('text-ink-muted');
-}
+    // ── Stock tabs ────────────────────────────────────────────────
+    function activateTab(btn) {
+      document.querySelectorAll('.stock-tab').forEach(b => {
+        b.classList.remove('bg-white', 'text-ink', 'shadow-card');
+        b.classList.add('text-ink-muted');
+      });
+      btn.classList.add('bg-white', 'text-ink', 'shadow-card');
+      btn.classList.remove('text-ink-muted');
+    }
 
-// ── Nav highlight ────────────────────────────────────────────
-window.addEventListener('scroll',()=>{
-  const ids=['dashboard','indices','stocks','strategy','contact'];
-  let curr='';
-  ids.forEach(id=>{const el=document.getElementById(id);if(el&&window.scrollY>=el.offsetTop-80)curr=id;});
-  document.querySelectorAll('header nav a').forEach(a=>{
-    const active=a.getAttribute('href')==='#'+curr;
-    a.style.color=active?'#0057FF':'';
-    a.style.background=active?'#EEF3FF':'';
-    a.style.fontWeight=active?'600':'';
-  });
-});
+    // ── Nav highlight ────────────────────────────────────────────
+    window.addEventListener('scroll', () => {
+      const ids = ['dashboard', 'indices', 'stocks', 'strategy', 'contact'];
+      let curr = '';
+      ids.forEach(id => { const el = document.getElementById(id); if (el && window.scrollY >= el.offsetTop - 80) curr = id; });
+      document.querySelectorAll('header nav a').forEach(a => {
+        const active = a.getAttribute('href') === '#' + curr;
+        a.style.color = active ? '#0057FF' : '';
+        a.style.background = active ? '#EEF3FF' : '';
+        a.style.fontWeight = active ? '600' : '';
+      });
+    });
 
-// ── Contact form ─────────────────────────────────────────────
-document.getElementById('submitBtn').addEventListener('click',function(e){
-  e.preventDefault();
-  this.textContent='Message Sent ✓';this.style.background='#059669';this.style.boxShadow='none';
-  setTimeout(()=>{this.textContent='Send Message →';this.style.background='';this.style.boxShadow='';},3500);
-});
+    // ── Contact form ─────────────────────────────────────────────
+    document.getElementById('submitBtn').addEventListener('click', function (e) {
+      e.preventDefault();
+      this.textContent = 'Message Sent ✓'; this.style.background = '#059669'; this.style.boxShadow = 'none';
+      setTimeout(() => { this.textContent = 'Send Message →'; this.style.background = ''; this.style.boxShadow = ''; }, 3500);
+    });
 
-// ══ AUTH MODAL ═══════════════════════════════════════════════
-let currentMode='login';
-let timerInterval=null;
+    // ══ AUTH MODAL ═══════════════════════════════════════════════
+    let currentMode = 'login';
+    let timerInterval = null;
 
-function openAuth(mode='login'){
-  currentMode=mode;
-  document.getElementById('authModal').classList.add('open');
-  document.body.style.overflow='hidden';
-  switchTab(mode);
-  showPhoneStep();
-}
-function closeAuth(){
-  document.getElementById('authModal').classList.remove('open');
-  document.body.style.overflow='';
-  if(timerInterval)clearInterval(timerInterval);
-}
-function handleModalClick(e){
-  if(e.target===document.getElementById('authModal'))closeAuth();
-}
+    function openAuth(mode = 'login') {
+      currentMode = mode;
+      document.getElementById('authModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      switchTab(mode);
+      showPhoneStep();
+    }
+    function closeAuth() {
+      document.getElementById('authModal').classList.remove('open');
+      document.body.style.overflow = '';
+      if (timerInterval) clearInterval(timerInterval);
+    }
+    function handleModalClick(e) {
+      if (e.target === document.getElementById('authModal')) closeAuth();
+    }
 
-function switchTab(mode){
-  currentMode=mode;
-  const isSignup=mode==='signup';
+    function switchTab(mode) {
+      currentMode = mode;
+      const isSignup = mode === 'signup';
 
-  // tab buttons
-  document.getElementById('tabLogin').classList.toggle('active',!isSignup);
-  document.getElementById('tabSignup').classList.toggle('active',isSignup);
+      // tab buttons
+      document.getElementById('tabLogin').classList.toggle('active', !isSignup);
+      document.getElementById('tabSignup').classList.toggle('active', isSignup);
 
-  // left panel copy
-  document.getElementById('leftLogin').classList.toggle('hidden',isSignup);
-  document.getElementById('leftSignup').classList.toggle('hidden',!isSignup);
+      // left panel copy
+      document.getElementById('leftLogin').classList.toggle('hidden', isSignup);
+      document.getElementById('leftSignup').classList.toggle('hidden', !isSignup);
 
-  // show/hide signup-only fields
-  document.getElementById('nameFields').classList.toggle('hidden',!isSignup);
-  document.getElementById('emailField').classList.toggle('hidden',!isSignup);
-  if(isSignup)document.getElementById('nameFields').style.display='grid';
+      // show/hide signup-only fields
+      document.getElementById('nameFields').classList.toggle('hidden', !isSignup);
+      document.getElementById('emailField').classList.toggle('hidden', !isSignup);
+      if (isSignup) document.getElementById('nameFields').style.display = 'grid';
 
-  // form copy
-  document.getElementById('formTitle').textContent=isSignup?'Create your account':'Sign in to MarketPulse';
-  document.getElementById('formSub').textContent=isSignup?'Enter your details below to get started.':'We\'ll send a 6-digit OTP to your number.';
+      // form copy
+      document.getElementById('formTitle').textContent = isSignup ? 'Create your account' : 'Sign in to EdgeTrade';
+      document.getElementById('formSub').textContent = isSignup ? 'Enter your details below to get started.' : 'We\'ll send a 6-digit OTP to your number.';
 
-  showPhoneStep();
-}
+      showPhoneStep();
+    }
 
-function showPhoneStep(){
-  document.getElementById('phoneStep').classList.remove('hidden-step');
-  document.getElementById('otpStep').classList.remove('visible');
-}
+    function showPhoneStep() {
+      document.getElementById('phoneStep').classList.remove('hidden-step');
+      document.getElementById('otpStep').classList.remove('visible');
+    }
 
-function goToOtp(){
-  const ph=document.getElementById('phoneInput').value.trim();
-  if(ph.length<10){
-    document.getElementById('phoneInput').style.borderColor='#DC2626';
-    document.getElementById('phoneInput').style.boxShadow='0 0 0 3px rgba(220,38,38,.1)';
-    setTimeout(()=>{document.getElementById('phoneInput').style.borderColor='';document.getElementById('phoneInput').style.boxShadow='';},2000);
-    return;
-  }
-  document.getElementById('displayPhone').textContent=ph.replace(/(\d{5})(\d{5})/,'$1 $2');
-  document.getElementById('phoneStep').classList.add('hidden-step');
-  document.getElementById('otpStep').classList.add('visible');
-  document.querySelectorAll('.otp-input').forEach(i=>i.value='');
-  document.querySelectorAll('.otp-input')[0].focus();
-  startTimer(30);
-}
+    function goToOtp() {
+      const ph = document.getElementById('phoneInput').value.trim();
+      if (ph.length < 10) {
+        document.getElementById('phoneInput').style.borderColor = '#DC2626';
+        document.getElementById('phoneInput').style.boxShadow = '0 0 0 3px rgba(220,38,38,.1)';
+        setTimeout(() => { document.getElementById('phoneInput').style.borderColor = ''; document.getElementById('phoneInput').style.boxShadow = ''; }, 2000);
+        return;
+      }
+      document.getElementById('displayPhone').textContent = ph.replace(/(\d{5})(\d{5})/, '$1 $2');
+      document.getElementById('phoneStep').classList.add('hidden-step');
+      document.getElementById('otpStep').classList.add('visible');
+      document.querySelectorAll('.otp-input').forEach(i => i.value = '');
+      document.querySelectorAll('.otp-input')[0].focus();
+      startTimer(30);
+    }
 
-function backToPhone(){
-  document.getElementById('otpStep').classList.remove('visible');
-  document.getElementById('phoneStep').classList.remove('hidden-step');
-  if(timerInterval)clearInterval(timerInterval);
-}
+    function backToPhone() {
+      document.getElementById('otpStep').classList.remove('visible');
+      document.getElementById('phoneStep').classList.remove('hidden-step');
+      if (timerInterval) clearInterval(timerInterval);
+    }
 
-function verifyOtp(){
-  const boxes=document.querySelectorAll('.otp-input');
-  const otp=[...boxes].map(b=>b.value).join('');
-  if(otp.length<6){boxes.forEach(b=>{b.style.borderColor='#DC2626';});setTimeout(()=>boxes.forEach(b=>b.style.borderColor=''),1500);return;}
-  // Mock success
-  boxes.forEach(b=>{b.style.borderColor='#059669';b.style.background='#ECFDF5';});
-  setTimeout(()=>closeAuth(),1200);
-}
+    function verifyOtp() {
+      const boxes = document.querySelectorAll('.otp-input');
+      const otp = [...boxes].map(b => b.value).join('');
+      if (otp.length < 6) { boxes.forEach(b => { b.style.borderColor = '#DC2626'; }); setTimeout(() => boxes.forEach(b => b.style.borderColor = ''), 1500); return; }
+      // Mock success
+      boxes.forEach(b => { b.style.borderColor = '#059669'; b.style.background = '#ECFDF5'; });
+      setTimeout(() => closeAuth(), 1200);
+    }
 
-function otpNext(input,index){
-  input.value=input.value.replace(/\D/,'');
-  if(input.value&&index<5){document.querySelectorAll('.otp-input')[index+1].focus();}
-}
-function otpBack(e,index){
-  if(e.key==='Backspace'&&!e.target.value&&index>0){document.querySelectorAll('.otp-input')[index-1].focus();}
-}
+    function otpNext(input, index) {
+      input.value = input.value.replace(/\D/, '');
+      if (input.value && index < 5) { document.querySelectorAll('.otp-input')[index + 1].focus(); }
+    }
+    function otpBack(e, index) {
+      if (e.key === 'Backspace' && !e.target.value && index > 0) { document.querySelectorAll('.otp-input')[index - 1].focus(); }
+    }
 
-function startTimer(seconds){
-  if(timerInterval)clearInterval(timerInterval);
-  let s=seconds;
-  document.getElementById('otpTimer').textContent=s+'s';
-  timerInterval=setInterval(()=>{
-    s--;
-    document.getElementById('otpTimer').textContent=s+'s';
-    if(s<=0){clearInterval(timerInterval);document.getElementById('otpTimer').textContent='now';}
-  },1000);
-}
+    function startTimer(seconds) {
+      if (timerInterval) clearInterval(timerInterval);
+      let s = seconds;
+      document.getElementById('otpTimer').textContent = s + 's';
+      timerInterval = setInterval(() => {
+        s--;
+        document.getElementById('otpTimer').textContent = s + 's';
+        if (s <= 0) { clearInterval(timerInterval); document.getElementById('otpTimer').textContent = 'now'; }
+      }, 1000);
+    }
 
-// auth-tab active styling
-document.querySelectorAll('.auth-tab').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.auth-tab').forEach(b=>{b.classList.remove('active');b.style.background='';b.style.color='';});
-    btn.classList.add('active');
-  });
-});
-// Override to use brand colour for active
-const styleEl=document.createElement('style');
-styleEl.textContent='.auth-tab.active{background:#0057FF;color:white;}';
-document.head.appendChild(styleEl);
+    // auth-tab active styling
+    document.querySelectorAll('.auth-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.auth-tab').forEach(b => { b.classList.remove('active'); b.style.background = ''; b.style.color = ''; });
+        btn.classList.add('active');
+      });
+    });
+    // Override to use brand colour for active
+    const styleEl = document.createElement('style');
+    styleEl.textContent = '.auth-tab.active{background:#0057FF;color:white;}';
+    document.head.appendChild(styleEl);
 
-// Escape key closes modal
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAuth();});
-</script>
+    // Escape key closes modal
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAuth(); });
+  </script>
 </body>
+
 </html>

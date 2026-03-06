@@ -1,16 +1,21 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from config import Config
 
 db = SQLAlchemy()
 
 def create_app():
+
     app = Flask(__name__)
-    app.config.from_object(Config)
+
+    app.config.from_object("app.config.Config")
 
     db.init_app(app)
 
-    from .routes import main
+    from app.routes import main, auth, stock_bp, ipo_bp
+
     app.register_blueprint(main)
+    app.register_blueprint(auth)
+    app.register_blueprint(stock_bp)
+    app.register_blueprint(ipo_bp)
 
     return app

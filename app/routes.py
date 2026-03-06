@@ -1,98 +1,153 @@
-from flask import request,redirect,url_for,render_template,Blueprint,session,flash
-from .models import Subscription,Users
+from flask import request, redirect, url_for, render_template, Blueprint, session
+from werkzeug.security import generate_password_hash, check_password_hash
+
+from .models import Subscription, Users, Stock
 from . import db
-from werkzeug.security import generate_password_hash,check_password_hash
 
-main = Blueprint('main',__name__)
-
+main = Blueprint('main', __name__)
 
 
-## Landing Page
+# Landing Page
 @main.route("/")
 def landingPage():
     return render_template('dashboard.html')
 
 
-## Create Account Setup 
-@main.route("/signup",methods=['GET','POST'])
+# ---------------------------
+# SIGNUP
+# ---------------------------
+@main.route("/signup", methods=['GET', 'POST'])
 def signup():
-    if request.method=='GET':
-        return render_template("sign_up.html")
-    else:
-        first_name = str(request.form['firstName'])
-        last_name = str(request.form['lastName'])
-        email = str(request.form['email'])
-        password = str(request.form['password'])
-        hashed_password = generate_password_hash(password)
 
-        new_user = Users(first_name=first_name,
-                         last_name=last_name,
-                         email=email,
-                         password=hashed_password)
-        
-        db.session.add(new_user)
-        db.session.commit()
-        return redirect(url_for('main.signup_success',first_name=first_name))
-    
+    if request.method == 'GET':
+        return render_template("signup.html")
+
+    first_name = request.form['firstName']
+    last_name = request.form['lastName']
+    email = request.form['email']
+    password = request.form['password']
+
+    hashed_password = generate_password_hash(password)
+
+    new_user = Users(
+        first_name=first_name,
+        last_name=last_name,
+        email=email,
+        password=hashed_password
+    )
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    return redirect(url_for('auth.signup_success', first_name=first_name))
+
+
 @main.route("/signup_success/<first_name>")
 def signup_success(first_name):
-    return render_template("signup_success.html",first_name=first_name)
+    return render_template("signup_success.html", first_name=first_name)
 
 
-## User Login Setup
-@main.route("/login",methods=['GET','POST'])
+# ---------------------------
+# LOGIN
+# ---------------------------
+@main.route("/login", methods=['GET', 'POST'])
 def login():
-    if request.method=='GET':
+
+    if request.method == 'GET':
         return render_template("login.html")
-    else:
-        email = str(request.form['email'])
-        password = str(request.form['password'])
 
-        ## Get the User by email
-        user = Users.query.filter_by(email=email).first()
-        # Check password hash
-        if user and check_password_hash(user.password, password):
-            session['user_id'] = user.id
-            return redirect(url_for("main.index"))  # your dashboard route
-        else:
-            return redirect(url_for("main.login"))
+    email = request.form['email']
+    password = request.form['password']
+
+    user = Users.query.filter_by(email=email).first()
+
+    if user and check_password_hash(user.password, password):
+        session['user_id'] = user.id
+        return redirect(url_for("main.index"))
+
+    return redirect(url_for("auth.login"))
 
 
-@main.route("/index.html",methods=['GET'])
+# ---------------------------
+# DASHBOARD
+# ---------------------------
+@main.route("/index")
 def index():
-    if request.method == 'GET':
-        return render_template('index.html')
- 
-@main.route("/stocks",methods=['GET','POST'])
-def stocks():
-    if request.method == 'GET':
-        return render_template('stock.html')
-    else:
-        user_id = session.get('user_id')
-        if not user_id:
-            flash("Please log in first.", "danger")
-            return redirect(url_for('main.login'))
-        
-        stocks = request.form.get('stocks')
-        alert = request.form.get('alert_method')
-    
-        new_sub = Subscription(
-            user_id=user_id,
-            alert_type="stock",
-            stock_name = stocks,
-            notification_method = alert
-            )
-        db.session.add(new_sub)
+    return render_template('index.html')
+
+
+# ---------------------------
+# STOCK SUBSCRIPTION
+# ---------------------------
+@main.route("/stock", methods=["GET", "POST"])
+def stock():
+
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+
+    stocks = Stock.query.all()
+
+    if request.method == "POST":
+
+        selected_stocks = request.form.getlist("stocks")
+        notification_method = request.form.get("notification_method")
+
+        stock_names = []
+
+        for stock_id in selected_stocks:
+
+            # Get stock object
+            stock = Stock.query.get(stock_id)
+
+            if stock:
+                stock_names.append(stock.symbol)
+
+            # Check existing subscription
+            existing = Subscription.query.filter_by(
+                user_id=session["user_id"],
+                stock_id=stock_id,
+                alert_type="stock"
+            ).first()
+
+            # Save subscription if not exists
+            if not existing:
+                sub = Subscription(
+                    user_id=session["user_id"],
+                    stock_id=stock_id,
+                    alert_type="stock",
+                    notification_method=notification_method
+                )
+
+                db.session.add(sub)
+
         db.session.commit()
-        flash("Subscription saved successfully!", "success")
-        return redirect(url_for('main.success',stocks=stocks,alert=alert))
 
-@main.route("/success/<stocks>/<alert>",methods=['GET'])
-def success(stocks,alert):
-    return render_template('success.html',stocks=stocks,alert=alert)
+        # Convert list → string for success page
+        stocks_display = ", ".join(stock_names)
 
+        return redirect(
+            url_for(
+                "main.success",
+                stocks=stocks_display,
+                alert=notification_method
+            )
+        )
 
-@main.route("/ipo",methods=['GET'])
+    return render_template("stock.html", stocks=stocks)
+# ---------------------------
+# SUCCESS PAGE
+# ---------------------------
+@main.route("/success/<stocks>/<alert>")
+def success(stocks, alert):
+    return render_template(
+        "success.html",
+        stocks=stocks,
+        alert=alert
+    )
+
+# ---------------------------
+# IPO PAGE
+# ---------------------------
+@main.route("/ipo")
 def ipo():
     return render_template('ipo.html')
-

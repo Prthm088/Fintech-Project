@@ -4,322 +4,220 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IPO Alerts - Finser</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=DM+Sans:wght@400;700&display=swap" as="style">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #1D223A;
-            background-image: url('/static/images/BG01.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            overflow-x: hidden;
+        /* Grid BG */
+        .grid-bg { position: fixed; inset: 0; z-index: 0; background: linear-gradient(145deg, #0C1220 0%, #0D1B3E 100%); }
+        .grid-lines {
+            position: absolute; inset: 0;
+            background-image: linear-gradient(rgba(0,87,255,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(0,87,255,.07) 1px, transparent 1px);
+            background-size: 48px 48px;
         }
+        .orb1 { position: absolute; width: 560px; height: 560px; border-radius: 50%; background: radial-gradient(circle, rgba(0,87,255,.18) 0%, transparent 70%); top: -120px; right: -140px; animation: orbFloat 9s ease-in-out infinite; }
+        .orb2 { position: absolute; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(circle, rgba(251,191,36,.08) 0%, transparent 70%); bottom: 60px; left: -50px; animation: orbFloat 13s ease-in-out infinite reverse; }
+        @keyframes orbFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-28px)} }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(29, 34, 58, 0.8);
-            pointer-events: none;
-            z-index: -1;
+        /* Ticker */
+        .ticker-wrap { overflow: hidden; white-space: nowrap; }
+        .ticker-track { display: inline-flex; gap: 56px; animation: ticker 28s linear infinite; }
+        @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+        /* Checkbox items */
+        .check-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 14px 16px;
+            background: rgba(255,255,255,.04); border: 1.5px solid rgba(255,255,255,.08);
+            border-radius: 12px; cursor: pointer; transition: all .2s;
         }
+        .check-item:hover { background: rgba(255,255,255,.08); border-color: rgba(0,87,255,.3); }
+        .check-item.selected { background: rgba(0,87,255,.1); border-color: rgba(0,87,255,.45); }
+        .check-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: #0057FF; cursor: pointer; flex-shrink: 0; }
+        .check-label { font-size: 15px; font-weight: 500; color: white; cursor: pointer; flex: 1; }
 
-        .container {
-            background: rgba(16, 185, 129, 0.08);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            border-radius: 20px;
-            padding: 40px;
-            backdrop-filter: blur(15px);
-            max-width: 600px;
-            width: 100%;
-            position: relative;
-        }
-
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            color: #3b82f6;
-            text-decoration: none;
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            margin-bottom: 2rem;
-            transition: color 0.3s ease;
-        }
-
-        .back-link:hover {
-            color: #10b981;
-        }
-
-        .back-link::before {
-            content: '←';
-            margin-right: 0.5rem;
-            font-size: 1.2rem;
-        }
-
-        h1 {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 2.2rem;
-            font-weight: bold;
-            color: #10b981;
-            margin-bottom: 2rem;
-            text-align: center;
-            letter-spacing: -0.02em;
-        }
-
-        .form-section {
-            margin-bottom: 2rem;
-        }
-
-        .form-section h2 {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 1rem;
-        }
-
-        .description {
-            background: rgba(59, 130, 246, 0.08);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            position: relative;
-        }
-
-        .description::before {
-            content: '💡';
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            font-size: 1.5rem;
-            opacity: 0.7;
-        }
-
-        .description p {
-            color: #d1d5db;
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            line-height: 1.6;
-            margin: 0;
-        }
-
-        .checkbox-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem 1rem;
-            background: rgba(16, 185, 129, 0.05);
-            border: 1px solid rgba(16, 185, 129, 0.15);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .checkbox-item:hover {
-            background: rgba(16, 185, 129, 0.1);
-            border-color: rgba(16, 185, 129, 0.25);
-        }
-
-        .checkbox-item.selected {
-            background: rgba(16, 185, 129, 0.15);
-            border-color: rgba(16, 185, 129, 0.3);
-        }
-
-        .checkbox-item::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            right: 1rem;
-            transform: translateY(-50%);
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #10b981;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .checkbox-item.selected::before {
-            opacity: 1;
-        }
-
-        input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            margin-right: 0.75rem;
-            cursor: pointer;
-            accent-color: #10b981;
-        }
-
-        .checkbox-label {
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            font-weight: 500;
-            color: white;
-            cursor: pointer;
-            flex: 1;
-        }
-
+        /* Submit button */
         .submit-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #10b981, #3b82f6);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 1rem;
-            position: relative;
-            overflow: hidden;
+            width: 100%; padding: 15px;
+            background: #0057FF; color: white;
+            border: none; border-radius: 12px;
+            font-size: 15px; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+            cursor: pointer; transition: all .2s;
+            box-shadow: 0 4px 18px rgba(0,87,255,.32);
+        }
+        .submit-btn:hover { background: #0040CC; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,87,255,.4); }
+        .submit-btn:active { transform: translateY(0); }
+
+        /* Back link */
+        .back-link {
+            display: inline-flex; align-items: center; gap: 6px;
+            color: rgba(148,163,184,.7); font-size: 13px; font-weight: 600;
+            text-decoration: none; transition: color .2s; margin-bottom: 24px;
+        }
+        .back-link:hover { color: #5B9FFF; }
+
+        /* Feature pills */
+        .feature-pill {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+            border-radius: 99px; padding: 6px 14px;
+            font-size: 12px; font-weight: 600; color: rgba(255,255,255,.7);
         }
 
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        /* Info card */
+        .info-card {
+            background: rgba(0,87,255,.08); border: 1px solid rgba(0,87,255,.2);
+            border-radius: 14px; padding: 18px 20px;
         }
 
-        .submit-btn:active {
-            transform: translateY(0);
-        }
+        /* Fade-in */
+        @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
+        .fade-up    { animation: fadeUp .5s ease both; }
+        .fade-up-d1 { animation: fadeUp .5s .1s ease both; }
+        .fade-up-d2 { animation: fadeUp .5s .2s ease both; }
+        .fade-up-d3 { animation: fadeUp .5s .3s ease both; }
+        .fade-up-d4 { animation: fadeUp .5s .4s ease both; }
 
-        .feature-highlight {
-            background: linear-gradient(135deg, #10b981, #3b82f6);
-            color: white;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        @media (max-width: 768px) {
-            body {
-                background-attachment: scroll;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 30px 25px;
-                margin: 10px;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .form-section h2 {
-                font-size: 1.1rem;
-            }
-        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 99px; }
     </style>
 </head>
-<body>
-    <div class="container">
-        <a href="{{ url_for('main.index') }}" class="back-link">Back</a>
-        
-        <h1>IPO Investment Alerts</h1>
+<body class="min-h-screen flex flex-col" style="color:white">
 
-        <form action="/submit_ipo" method="POST">
-            <div class="form-section">
-                <h2>Would you like to receive curated IPO recommendations?</h2>
-                
-                <div class="description">
-                    <p>We'll notify you only when a fundamentally strong IPO is worth investing in. Our team analyzes company financials, market conditions, and growth potential to bring you the best opportunities.</p>
+    <!-- Background -->
+    <div class="grid-bg"><div class="grid-lines"></div><div class="orb1"></div><div class="orb2"></div></div>
+
+    <!-- Ticker -->
+    <div class="relative z-10 h-9 flex items-center ticker-wrap" style="background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:blur(8px)">
+        <div class="ticker-track">
+            <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="font-semibold">NIFTY 50</span><span style="color:#34D399">▲ 22,458.40 +0.74%</span></span>
+            <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="font-semibold">SENSEX</span><span style="color:#34D399">▲ 73,872.29 +0.68%</span></span>
+            <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="font-semibold">BANK NIFTY</span><span style="color:#F87171">▼ 48,201.55 −0.32%</span></span>
+            <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="font-semibold">FIN NIFTY</span><span style="color:#34D399">▲ 21,340.80 +0.45%</span></span>
+            <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="font-semibold">RELIANCE</span><span style="color:#34D399">▲ 2,945.50 +1.20%</span></span>
+            <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="font-semibold">TCS</span><span style="color:#F87171">▼ 3,812.00 −0.55%</span></span>
+            <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="font-semibold">HDFC BANK</span><span style="color:#34D399">▲ 1,678.90 +0.88%</span></span>
+            <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="font-semibold">INFY</span><span style="color:#F87171">▼ 1,423.70 −0.43%</span></span>
+            <!-- dupe -->
+            <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="font-semibold">NIFTY 50</span><span style="color:#34D399">▲ 22,458.40 +0.74%</span></span>
+            <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="font-semibold">SENSEX</span><span style="color:#34D399">▲ 73,872.29 +0.68%</span></span>
+            <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="font-semibold">BANK NIFTY</span><span style="color:#F87171">▼ 48,201.55 −0.32%</span></span>
+            <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="font-semibold">FIN NIFTY</span><span style="color:#34D399">▲ 21,340.80 +0.45%</span></span>
+            <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="font-semibold">RELIANCE</span><span style="color:#34D399">▲ 2,945.50 +1.20%</span></span>
+            <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="font-semibold">TCS</span><span style="color:#F87171">▼ 3,812.00 −0.55%</span></span>
+            <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="font-semibold">HDFC BANK</span><span style="color:#34D399">▲ 1,678.90 +0.88%</span></span>
+            <span class="inline-flex items-center gap-2" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="font-semibold">INFY</span><span style="color:#F87171">▼ 1,423.70 −0.43%</span></span>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="relative z-10 flex-1 flex items-center justify-center px-5 py-12">
+        <div class="w-full" style="max-width:560px">
+            <div class="fade-up rounded-2xl p-8" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(16px);box-shadow:0 24px 60px rgba(0,0,0,.4)">
+
+                <!-- Back -->
+                <a href="{{ url_for('main.index') }}" class="back-link">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+                    Back
+                </a>
+
+                <!-- Header -->
+                <div class="fade-up-d1 mb-7">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#F59E0B,#FB923C)">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                        </div>
+                        <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(20px,4vw,26px);font-weight:800;letter-spacing:-.02em">IPO Investment Alerts</h1>
+                    </div>
+                    <p style="font-size:14px;color:rgba(148,163,184,.6);padding-left:52px;font-weight:300">Curated IPO recommendations, delivered when it matters.</p>
                 </div>
 
-                <div class="feature-highlight">
-                    🎯 Only high-quality IPOs • 📊 Detailed analysis • ⚡ Real-time alerts
-                </div>
+                <form action="/submit_ipo" method="POST">
+
+                    <!-- Description card -->
+                    <div class="info-card fade-up-d2 mb-5">
+                        <div class="flex gap-3">
+                            <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(0,87,255,.15)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5B9FFF" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            </div>
+                            <div>
+                                <p style="font-size:13px;font-weight:600;color:rgba(255,255,255,.9);margin-bottom:4px">Would you like to receive curated IPO recommendations?</p>
+                                <p style="font-size:13px;color:rgba(148,163,184,.65);line-height:1.7;font-weight:300">We'll notify you only when a fundamentally strong IPO is worth investing in. Our team analyzes company financials, market conditions, and growth potential to bring you the best opportunities.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feature pills -->
+                    <div class="flex flex-wrap gap-2 mb-7 fade-up-d2">
+                        <span class="feature-pill">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5B9FFF" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            Only high-quality IPOs
+                        </span>
+                        <span class="feature-pill">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                            Detailed analysis
+                        </span>
+                        <span class="feature-pill">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="2.5" stroke-linecap="round"><polyline points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/></svg>
+                            Real-time alerts
+                        </span>
+                    </div>
+
+                    <!-- Alert method -->
+                    <div class="mb-7 fade-up-d3">
+                        <label style="display:block;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(148,163,184,.7);margin-bottom:10px">
+                            How would you like to receive alerts?
+                        </label>
+                        <div style="display:flex;flex-direction:column;gap:10px">
+                            <label class="check-item">
+                                <input type="checkbox" name="alert_method" value="telegram">
+                                <div style="width:32px;height:32px;border-radius:8px;background:rgba(0,136,204,.15);border:1px solid rgba(0,136,204,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2" stroke-linecap="round"><path d="M21.198 2.433a2.242 2.242 0 0 0-1.022.215l-16.5 6.316a2.229 2.229 0 0 0 .12 4.19l3.444 1.055 1.895 5.96a.863.863 0 0 0 1.518.235l2.358-2.847 3.964 2.932a2.24 2.24 0 0 0 3.432-1.588l2.597-14.7a2.25 2.25 0 0 0-1.806-2.768z"/></svg>
+                                </div>
+                                <span class="check-label">Telegram</span>
+                            </label>
+                            <label class="check-item">
+                                <input type="checkbox" name="alert_method" value="email">
+                                <div style="width:32px;height:32px;border-radius:8px;background:rgba(0,87,255,.12);border:1px solid rgba(0,87,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5B9FFF" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                                </div>
+                                <span class="check-label">Email</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Submit -->
+                    <div class="fade-up-d4">
+                        <button type="submit" class="submit-btn">Subscribe to IPO Alerts →</button>
+                    </div>
+
+                </form>
             </div>
-
-            <div class="form-section">
-                <h2>How would you like to receive alerts?</h2>
-                <div class="checkbox-group">
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="alert_method" value="telegram">
-                        <span class="checkbox-label">Telegram</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="alert_method" value="email">
-                        <span class="checkbox-label">Email</span>
-                    </label>
-                </div>
-            </div>
-
-            <button type="submit" class="submit-btn">Subscribe to IPO Alerts</button>
-        </form>
+        </div>
     </div>
 
     <script>
-        // Add interactive feedback for checkboxes
-        document.querySelectorAll('.checkbox-item').forEach(item => {
+        document.querySelectorAll('.check-item').forEach(item => {
             const checkbox = item.querySelector('input[type="checkbox"]');
-            
             item.addEventListener('click', function(e) {
-                if (e.target !== checkbox) {
-                    checkbox.checked = !checkbox.checked;
-                }
-                
-                if (checkbox.checked) {
-                    item.classList.add('selected');
-                } else {
-                    item.classList.remove('selected');
-                }
+                if (e.target !== checkbox) checkbox.checked = !checkbox.checked;
+                item.classList.toggle('selected', checkbox.checked);
             });
-            
             checkbox.addEventListener('change', function() {
-                if (this.checked) {
-                    item.classList.add('selected');
-                } else {
-                    item.classList.remove('selected');
-                }
+                item.classList.toggle('selected', this.checked);
             });
         });
 
-        // Add submit button animation and validation
         document.querySelector('.submit-btn').addEventListener('click', function(e) {
-            // Check if at least one checkbox is selected
             const checkboxes = document.querySelectorAll('input[type="checkbox"]');
             const isSelected = Array.from(checkboxes).some(cb => cb.checked);
-            
             if (!isSelected) {
                 e.preventDefault();
                 alert('Please select at least one alert method');
-                return;
             }
         });
     </script>
