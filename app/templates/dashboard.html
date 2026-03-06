@@ -1242,66 +1242,51 @@
         </button>
 
         <!-- Tab toggle: Login / Sign Up -->
-        <div class="flex gap-1 bg-surface-bg p-1 rounded-xl mb-8 w-fit">
+        <div class="flex gap-1 bg-surface-bg p-1 rounded-xl mb-6 w-fit">
           <button id="tabLogin" onclick="switchTab('login')" class="auth-tab active">Log In</button>
           <button id="tabSignup" onclick="switchTab('signup')" class="auth-tab">Sign Up</button>
         </div>
 
-        <!-- Phone step -->
-        <div id="phoneStep">
-          <h3 id="formTitle" class="mb-1"
-            style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:800;color:#0C1220">Enter your
-            phone number</h3>
-          <p id="formSub" class="text-ink-muted mb-7" style="font-size:14px">We'll send a 6-digit OTP to verify your
-            number.</p>
+        <!-- ── LOGIN FORM ── -->
+        <div id="loginForm">
+          <h3 class="mb-1" style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:800;color:#0C1220">Sign in to EdgeTrade</h3>
+          <p class="text-ink-muted mb-6" style="font-size:14px">Enter your credentials to access your dashboard.</p>
 
-          <!-- Name fields (signup only) -->
-          <div id="nameFields" class="hidden grid grid-cols-2 gap-3 mb-4">
-            <div>
-              <label class="block font-semibold text-ink mb-1.5" style="font-size:13px">First Name</label>
-              <input type="text" placeholder="Arjun"
-                class="w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-3 text-ink transition-all"
+          <!-- Alert / success banners -->
+          <div id="loginAlert" class="hidden mb-4 px-4 py-3 rounded-xl text-sm font-medium" style="background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);color:#DC2626;font-size:13px">
+            Incorrect email or password. Please try again.
+          </div>
+
+          <form id="loginFormEl" action="{{ url_for('auth.login') }}" method="POST" novalidate>
+            <!-- Email -->
+            <div class="mb-4">
+              <label class="block font-semibold text-ink mb-1.5" style="font-size:13px">Email Address</label>
+              <input id="loginEmail" type="email" name="email" placeholder="you@email.com"
+                class="auth-field w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-3 text-ink transition-all"
                 style="font-size:14px" />
+              <p id="loginEmailErr" class="auth-err hidden mt-1.5" style="font-size:12px;color:#DC2626">Please enter a valid email address.</p>
             </div>
-            <div>
-              <label class="block font-semibold text-ink mb-1.5" style="font-size:13px">Last Name</label>
-              <input type="text" placeholder="Kapoor"
-                class="w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-3 text-ink transition-all"
-                style="font-size:14px" />
+            <!-- Password -->
+            <div class="mb-2">
+              <label class="block font-semibold text-ink mb-1.5" style="font-size:13px">Password</label>
+              <div class="relative">
+                <input id="loginPassword" type="password" name="password" placeholder="Enter your password"
+                  class="auth-field w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-3 pr-11 text-ink transition-all"
+                  style="font-size:14px" />
+                <button type="button" onclick="togglePwd('loginPassword', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-ink-subtle hover:text-ink transition-colors">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+              <p id="loginPasswordErr" class="auth-err hidden mt-1.5" style="font-size:12px;color:#DC2626">Password must be at least 4 characters.</p>
             </div>
-          </div>
-
-          <!-- Phone row -->
-          <label class="block font-semibold text-ink mb-2" style="font-size:13px">Phone Number</label>
-          <div class="flex gap-2 mb-5">
-            <!-- Country selector -->
-            <div
-              class="flex items-center gap-2 bg-surface-bg border border-surface-border rounded-lg px-3 py-3 cursor-pointer hover:border-slate-400 transition-all shrink-0">
-              <span style="font-size:18px">🇮🇳</span>
-              <span class="font-semibold text-ink" style="font-size:14px">+91</span>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2.5">
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
+            <div class="text-right mb-5">
+              <a href="#" class="text-brand hover:underline font-medium" style="font-size:12px">Forgot password?</a>
             </div>
-            <input id="phoneInput" type="tel" placeholder="Enter phone number"
-              class="flex-1 bg-surface-bg border border-surface-border rounded-lg px-4 py-3 text-ink transition-all"
-              style="font-size:15px" maxlength="10" />
-          </div>
 
-          <!-- Email (signup only) -->
-          <div id="emailField" class="hidden mb-4">
-            <label class="block font-semibold text-ink mb-1.5" style="font-size:13px">Email Address <span
-                class="text-ink-subtle font-normal">(optional)</span></label>
-            <input type="email" placeholder="you@email.com"
-              class="w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-3 text-ink transition-all"
-              style="font-size:14px" />
-          </div>
-
-          <button onclick="goToOtp()"
-            class="w-full py-3.5 font-semibold text-white bg-brand hover:bg-brand-dark rounded-xl transition-all mb-4"
-            style="font-size:15px;box-shadow:0 4px 16px rgba(0,87,255,.28)">Get OTP</button>
-          <p class="text-ink-muted text-center" style="font-size:12px">By continuing, you agree to our <a href="#"
-              class="text-brand hover:underline font-medium">Terms &amp; Conditions</a></p>
+            <button id="loginSubmitBtn" type="submit"
+              class="w-full py-3.5 font-semibold text-white bg-brand hover:bg-brand-dark rounded-xl transition-all mb-4 relative overflow-hidden"
+              style="font-size:15px;box-shadow:0 4px 16px rgba(0,87,255,.28)">Sign In</button>
+          </form>
 
           <!-- Divider -->
           <div class="flex items-center gap-3 my-5">
@@ -1309,78 +1294,95 @@
             <span class="text-ink-subtle" style="font-size:12px;font-weight:500">or continue with</span>
             <div class="flex-1 h-px bg-surface-border"></div>
           </div>
-
-          <!-- Social login -->
           <div class="grid grid-cols-2 gap-3">
-            <button
-              class="flex items-center justify-center gap-2.5 bg-surface-bg hover:bg-surface-border border border-surface-border rounded-xl py-3 transition-all font-semibold text-ink"
-              style="font-size:13px">
-              <svg width="18" height="18" viewBox="0 0 24 24">
-                <path
-                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                  fill="#4285F4" />
-                <path
-                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                  fill="#34A853" />
-                <path
-                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                  fill="#FBBC05" />
-                <path
-                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                  fill="#EA4335" />
-              </svg>
+            <button class="flex items-center justify-center gap-2.5 bg-surface-bg hover:bg-surface-border border border-surface-border rounded-xl py-3 transition-all font-semibold text-ink" style="font-size:13px">
+              <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
               Google
             </button>
-            <button
-              class="flex items-center justify-center gap-2.5 bg-surface-bg hover:bg-surface-border border border-surface-border rounded-xl py-3 transition-all font-semibold text-ink"
-              style="font-size:13px">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-              </svg>
+            <button class="flex items-center justify-center gap-2.5 bg-surface-bg hover:bg-surface-border border border-surface-border rounded-xl py-3 transition-all font-semibold text-ink" style="font-size:13px">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
               Facebook
             </button>
           </div>
         </div>
 
-        <!-- OTP step -->
-        <div id="otpStep">
-          <div class="flex items-center gap-3 mb-6">
-            <button onclick="backToPhone()"
-              class="w-8 h-8 rounded-full bg-surface-bg hover:bg-surface-border flex items-center justify-center transition-colors">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2.5"
-                stroke-linecap="round">
-                <polyline points="15 18 9 12 15 6" />
-              </svg>
-            </button>
-            <div>
-              <h3 style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:800;color:#0C1220">
-                Enter OTP</h3>
-              <p class="text-ink-muted" style="font-size:13px">Sent to +91 <span id="displayPhone"
-                  class="font-semibold text-ink">98765 43210</span></p>
+        <!-- ── SIGNUP FORM ── -->
+        <div id="signupForm" class="hidden">
+          <h3 class="mb-1" style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:800;color:#0C1220">Create your account</h3>
+          <p class="text-ink-muted mb-5" style="font-size:14px">Join EdgeTrade and start trading smarter today.</p>
+
+          <form id="signupFormEl" action="{{ url_for('auth.signup') }}" method="POST" novalidate>
+            <!-- Name row -->
+            <div class="grid grid-cols-2 gap-3 mb-4">
+              <div>
+                <label class="block font-semibold text-ink mb-1.5" style="font-size:13px">First Name</label>
+                <input id="signupFirst" type="text" name="firstName" placeholder="Arjun"
+                  class="auth-field w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-3 text-ink transition-all"
+                  style="font-size:14px" />
+                <p id="signupFirstErr" class="auth-err hidden mt-1.5" style="font-size:12px;color:#DC2626">Min. 2 letters only.</p>
+              </div>
+              <div>
+                <label class="block font-semibold text-ink mb-1.5" style="font-size:13px">Last Name</label>
+                <input id="signupLast" type="text" name="lastName" placeholder="Kapoor"
+                  class="auth-field w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-3 text-ink transition-all"
+                  style="font-size:14px" />
+                <p id="signupLastErr" class="auth-err hidden mt-1.5" style="font-size:12px;color:#DC2626">Min. 2 letters only.</p>
+              </div>
             </div>
-          </div>
+            <!-- Email -->
+            <div class="mb-4">
+              <label class="block font-semibold text-ink mb-1.5" style="font-size:13px">Email Address</label>
+              <input id="signupEmail" type="email" name="email" placeholder="you@email.com"
+                class="auth-field w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-3 text-ink transition-all"
+                style="font-size:14px" />
+              <p id="signupEmailErr" class="auth-err hidden mt-1.5" style="font-size:12px;color:#DC2626">Please enter a valid email address.</p>
+            </div>
+            <!-- Password -->
+            <div class="mb-4">
+              <label class="block font-semibold text-ink mb-1.5" style="font-size:13px">Password</label>
+              <div class="relative">
+                <input id="signupPassword" type="password" name="password" placeholder="Create a password"
+                  class="auth-field w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-3 pr-11 text-ink transition-all"
+                  style="font-size:14px" />
+                <button type="button" onclick="togglePwd('signupPassword', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-ink-subtle hover:text-ink transition-colors">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+              <p id="signupPasswordErr" class="auth-err hidden mt-1.5" style="font-size:12px;color:#DC2626">Password must be at least 8 characters.</p>
+              <!-- Strength bar -->
+              <div class="mt-2">
+                <div class="h-1 rounded-full bg-surface-border overflow-hidden">
+                  <div id="strengthBar" class="h-full rounded-full transition-all" style="width:0%;background:#DC2626"></div>
+                </div>
+                <p id="strengthLabel" class="mt-1 text-ink-subtle" style="font-size:11px">Password strength</p>
+              </div>
+            </div>
+            <!-- Confirm Password -->
+            <div class="mb-4">
+              <label class="block font-semibold text-ink mb-1.5" style="font-size:13px">Confirm Password</label>
+              <div class="relative">
+                <input id="signupConfirm" type="password" name="confirmPassword" placeholder="Confirm your password"
+                  class="auth-field w-full bg-surface-bg border border-surface-border rounded-lg px-4 py-3 pr-11 text-ink transition-all"
+                  style="font-size:14px" />
+                <button type="button" onclick="togglePwd('signupConfirm', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-ink-subtle hover:text-ink transition-colors">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+              <p id="signupConfirmErr" class="auth-err hidden mt-1.5" style="font-size:12px;color:#DC2626">Passwords do not match.</p>
+            </div>
+            <!-- Terms -->
+            <div class="flex items-start gap-2.5 mb-5">
+              <input id="signupTerms" type="checkbox" name="terms" class="mt-0.5 rounded accent-brand" style="transform:scale(1.15)" />
+              <label for="signupTerms" class="text-ink-muted" style="font-size:13px;line-height:1.5">
+                I agree to the <a href="#" class="text-brand hover:underline font-medium">Terms of Service</a> and <a href="#" class="text-brand hover:underline font-medium">Privacy Policy</a>
+              </label>
+            </div>
+            <p id="signupTermsErr" class="auth-err hidden -mt-3 mb-4" style="font-size:12px;color:#DC2626">You must agree to the terms to continue.</p>
 
-          <!-- 6-digit OTP inputs -->
-          <div class="flex gap-2.5 mb-6" id="otpBoxes">
-            <input type="text" maxlength="1" class="otp-input" oninput="otpNext(this,0)" onkeydown="otpBack(event,0)" />
-            <input type="text" maxlength="1" class="otp-input" oninput="otpNext(this,1)" onkeydown="otpBack(event,1)" />
-            <input type="text" maxlength="1" class="otp-input" oninput="otpNext(this,2)" onkeydown="otpBack(event,2)" />
-            <input type="text" maxlength="1" class="otp-input" oninput="otpNext(this,3)" onkeydown="otpBack(event,3)" />
-            <input type="text" maxlength="1" class="otp-input" oninput="otpNext(this,4)" onkeydown="otpBack(event,4)" />
-            <input type="text" maxlength="1" class="otp-input" oninput="otpNext(this,5)" onkeydown="otpBack(event,5)" />
-          </div>
-
-          <button onclick="verifyOtp()"
-            class="w-full py-3.5 font-semibold text-white bg-brand hover:bg-brand-dark rounded-xl transition-all mb-4"
-            style="font-size:15px;box-shadow:0 4px 16px rgba(0,87,255,.28)">Verify & Continue</button>
-
-          <p class="text-center text-ink-muted" style="font-size:13px">Didn't receive it? <button
-              onclick="backToPhone()" class="text-brand font-semibold hover:underline">Resend OTP</button></p>
-
-          <!-- Timer -->
-          <p class="text-center text-ink-subtle mt-2" style="font-size:12px">Resend available in <span id="otpTimer"
-              class="font-semibold text-ink">30s</span></p>
+            <button id="signupSubmitBtn" type="submit"
+              class="w-full py-3.5 font-semibold text-white bg-brand hover:bg-brand-dark rounded-xl transition-all relative overflow-hidden"
+              style="font-size:15px;box-shadow:0 4px 16px rgba(0,87,255,.28)">Create Account</button>
+          </form>
         </div>
 
       </div><!-- /right panel -->
@@ -1426,117 +1428,199 @@
 
     // ══ AUTH MODAL ═══════════════════════════════════════════════
     let currentMode = 'login';
-    let timerInterval = null;
 
     function openAuth(mode = 'login') {
-      currentMode = mode;
       document.getElementById('authModal').classList.add('open');
       document.body.style.overflow = 'hidden';
       switchTab(mode);
-      showPhoneStep();
     }
     function closeAuth() {
       document.getElementById('authModal').classList.remove('open');
       document.body.style.overflow = '';
-      if (timerInterval) clearInterval(timerInterval);
     }
     function handleModalClick(e) {
       if (e.target === document.getElementById('authModal')) closeAuth();
     }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAuth(); });
 
     function switchTab(mode) {
       currentMode = mode;
       const isSignup = mode === 'signup';
 
-      // tab buttons
       document.getElementById('tabLogin').classList.toggle('active', !isSignup);
       document.getElementById('tabSignup').classList.toggle('active', isSignup);
-
-      // left panel copy
       document.getElementById('leftLogin').classList.toggle('hidden', isSignup);
       document.getElementById('leftSignup').classList.toggle('hidden', !isSignup);
-
-      // show/hide signup-only fields
-      document.getElementById('nameFields').classList.toggle('hidden', !isSignup);
-      document.getElementById('emailField').classList.toggle('hidden', !isSignup);
-      if (isSignup) document.getElementById('nameFields').style.display = 'grid';
-
-      // form copy
-      document.getElementById('formTitle').textContent = isSignup ? 'Create your account' : 'Sign in to EdgeTrade';
-      document.getElementById('formSub').textContent = isSignup ? 'Enter your details below to get started.' : 'We\'ll send a 6-digit OTP to your number.';
-
-      showPhoneStep();
+      document.getElementById('loginForm').classList.toggle('hidden', isSignup);
+      document.getElementById('signupForm').classList.toggle('hidden', !isSignup);
     }
 
-    function showPhoneStep() {
-      document.getElementById('phoneStep').classList.remove('hidden-step');
-      document.getElementById('otpStep').classList.remove('visible');
+    // ── Password visibility toggle ────────────────────────────────
+    function togglePwd(inputId, btn) {
+      const inp = document.getElementById(inputId);
+      const show = inp.type === 'password';
+      inp.type = show ? 'text' : 'password';
+      btn.innerHTML = show
+        ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`
+        : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
     }
 
-    function goToOtp() {
-      const ph = document.getElementById('phoneInput').value.trim();
-      if (ph.length < 10) {
-        document.getElementById('phoneInput').style.borderColor = '#DC2626';
-        document.getElementById('phoneInput').style.boxShadow = '0 0 0 3px rgba(220,38,38,.1)';
-        setTimeout(() => { document.getElementById('phoneInput').style.borderColor = ''; document.getElementById('phoneInput').style.boxShadow = ''; }, 2000);
-        return;
-      }
-      document.getElementById('displayPhone').textContent = ph.replace(/(\d{5})(\d{5})/, '$1 $2');
-      document.getElementById('phoneStep').classList.add('hidden-step');
-      document.getElementById('otpStep').classList.add('visible');
-      document.querySelectorAll('.otp-input').forEach(i => i.value = '');
-      document.querySelectorAll('.otp-input')[0].focus();
-      startTimer(30);
+    // ── Field state helpers ───────────────────────────────────────
+    function fieldOk(input, errId) {
+      input.style.borderColor = '#059669';
+      input.style.boxShadow = '0 0 0 3px rgba(5,150,105,.12)';
+      document.getElementById(errId).classList.add('hidden');
+    }
+    function fieldErr(input, errId, msg) {
+      input.style.borderColor = '#DC2626';
+      input.style.boxShadow = '0 0 0 3px rgba(220,38,38,.1)';
+      const el = document.getElementById(errId);
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+    function fieldReset(input, errId) {
+      input.style.borderColor = '';
+      input.style.boxShadow = '';
+      document.getElementById(errId).classList.add('hidden');
     }
 
-    function backToPhone() {
-      document.getElementById('otpStep').classList.remove('visible');
-      document.getElementById('phoneStep').classList.remove('hidden-step');
-      if (timerInterval) clearInterval(timerInterval);
+    // ── Validators ────────────────────────────────────────────────
+    const reEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const reName  = /^[a-zA-Z\s]{2,}$/;
+    const validateEmail    = v => reEmail.test(v.trim());
+    const validateName     = v => reName.test(v.trim());
+    const validatePassword = v => v.length >= 8;
+    const validateLoginPwd = v => v.length >= 4;
+
+    // Password strength
+    function passwordStrength(pw) {
+      if (!pw) return { pct: 0, color: '#DC2626', label: 'Password strength' };
+      let score = 0;
+      if (pw.length >= 8)  score++;
+      if (pw.length >= 12) score++;
+      if (/[a-z]/.test(pw)) score++;
+      if (/[A-Z]/.test(pw)) score++;
+      if (/[0-9]/.test(pw)) score++;
+      if (/[^A-Za-z0-9]/.test(pw)) score++;
+      if (score <= 2) return { pct: 25, color: '#DC2626', label: 'Weak password' };
+      if (score <= 3) return { pct: 50, color: '#F97316', label: 'Fair password' };
+      if (score <= 4) return { pct: 75, color: '#EAB308', label: 'Good password' };
+      return { pct: 100, color: '#059669', label: 'Strong password ✓' };
     }
 
-    function verifyOtp() {
-      const boxes = document.querySelectorAll('.otp-input');
-      const otp = [...boxes].map(b => b.value).join('');
-      if (otp.length < 6) { boxes.forEach(b => { b.style.borderColor = '#DC2626'; }); setTimeout(() => boxes.forEach(b => b.style.borderColor = ''), 1500); return; }
-      // Mock success
-      boxes.forEach(b => { b.style.borderColor = '#059669'; b.style.background = '#ECFDF5'; });
-      setTimeout(() => closeAuth(), 1200);
-    }
+    // ══ LOGIN VALIDATION ═════════════════════════════════════════
+    (function () {
+      const form = document.getElementById('loginFormEl');
+      const emailIn = document.getElementById('loginEmail');
+      const pwdIn   = document.getElementById('loginPassword');
+      const btn     = document.getElementById('loginSubmitBtn');
+      const alert   = document.getElementById('loginAlert');
 
-    function otpNext(input, index) {
-      input.value = input.value.replace(/\D/, '');
-      if (input.value && index < 5) { document.querySelectorAll('.otp-input')[index + 1].focus(); }
-    }
-    function otpBack(e, index) {
-      if (e.key === 'Backspace' && !e.target.value && index > 0) { document.querySelectorAll('.otp-input')[index - 1].focus(); }
-    }
-
-    function startTimer(seconds) {
-      if (timerInterval) clearInterval(timerInterval);
-      let s = seconds;
-      document.getElementById('otpTimer').textContent = s + 's';
-      timerInterval = setInterval(() => {
-        s--;
-        document.getElementById('otpTimer').textContent = s + 's';
-        if (s <= 0) { clearInterval(timerInterval); document.getElementById('otpTimer').textContent = 'now'; }
-      }, 1000);
-    }
-
-    // auth-tab active styling
-    document.querySelectorAll('.auth-tab').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.auth-tab').forEach(b => { b.classList.remove('active'); b.style.background = ''; b.style.color = ''; });
-        btn.classList.add('active');
+      emailIn.addEventListener('input', () => {
+        if (!emailIn.value) { fieldReset(emailIn, 'loginEmailErr'); return; }
+        validateEmail(emailIn.value) ? fieldOk(emailIn, 'loginEmailErr') : fieldErr(emailIn, 'loginEmailErr', 'Please enter a valid email address.');
       });
-    });
-    // Override to use brand colour for active
-    const styleEl = document.createElement('style');
-    styleEl.textContent = '.auth-tab.active{background:#0057FF;color:white;}';
-    document.head.appendChild(styleEl);
 
-    // Escape key closes modal
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAuth(); });
+      pwdIn.addEventListener('input', () => {
+        if (!pwdIn.value) { fieldReset(pwdIn, 'loginPasswordErr'); return; }
+        validateLoginPwd(pwdIn.value) ? fieldOk(pwdIn, 'loginPasswordErr') : fieldErr(pwdIn, 'loginPasswordErr', 'Password must be at least 4 characters.');
+      });
+
+      form.addEventListener('submit', function (e) {
+        let ok = true;
+        if (!emailIn.value || !validateEmail(emailIn.value)) {
+          fieldErr(emailIn, 'loginEmailErr', 'Please enter a valid email address.');
+          ok = false;
+        } else { fieldOk(emailIn, 'loginEmailErr'); }
+
+        if (!pwdIn.value || !validateLoginPwd(pwdIn.value)) {
+          fieldErr(pwdIn, 'loginPasswordErr', 'Password must be at least 4 characters.');
+          ok = false;
+        } else { fieldOk(pwdIn, 'loginPasswordErr'); }
+
+        if (!ok) { e.preventDefault(); return; }
+
+        // Show loading
+        btn.disabled = true;
+        btn.innerHTML = '<span style="display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.4);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite"></span>';
+      });
+    })();
+
+    // ══ SIGNUP VALIDATION ════════════════════════════════════════
+    (function () {
+      const form    = document.getElementById('signupFormEl');
+      const first   = document.getElementById('signupFirst');
+      const last    = document.getElementById('signupLast');
+      const email   = document.getElementById('signupEmail');
+      const pwd     = document.getElementById('signupPassword');
+      const confirm = document.getElementById('signupConfirm');
+      const terms   = document.getElementById('signupTerms');
+      const btn     = document.getElementById('signupSubmitBtn');
+      const bar     = document.getElementById('strengthBar');
+      const lbl     = document.getElementById('strengthLabel');
+
+      function checkAll() {
+        return validateName(first.value) && validateName(last.value) &&
+               validateEmail(email.value) && validatePassword(pwd.value) &&
+               confirm.value === pwd.value && terms.checked;
+      }
+
+      first.addEventListener('input', () => {
+        if (!first.value) { fieldReset(first, 'signupFirstErr'); return; }
+        validateName(first.value) ? fieldOk(first, 'signupFirstErr') : fieldErr(first, 'signupFirstErr', 'Min. 2 letters, no numbers.');
+      });
+      last.addEventListener('input', () => {
+        if (!last.value) { fieldReset(last, 'signupLastErr'); return; }
+        validateName(last.value) ? fieldOk(last, 'signupLastErr') : fieldErr(last, 'signupLastErr', 'Min. 2 letters, no numbers.');
+      });
+      email.addEventListener('input', () => {
+        if (!email.value) { fieldReset(email, 'signupEmailErr'); return; }
+        validateEmail(email.value) ? fieldOk(email, 'signupEmailErr') : fieldErr(email, 'signupEmailErr', 'Please enter a valid email address.');
+      });
+      pwd.addEventListener('input', () => {
+        const s = passwordStrength(pwd.value);
+        bar.style.width = s.pct + '%';
+        bar.style.background = s.color;
+        lbl.textContent = s.label;
+        if (!pwd.value) { fieldReset(pwd, 'signupPasswordErr'); return; }
+        validatePassword(pwd.value) ? fieldOk(pwd, 'signupPasswordErr') : fieldErr(pwd, 'signupPasswordErr', 'Password must be at least 8 characters.');
+        if (confirm.value) {
+          confirm.value === pwd.value ? fieldOk(confirm, 'signupConfirmErr') : fieldErr(confirm, 'signupConfirmErr', 'Passwords do not match.');
+        }
+      });
+      confirm.addEventListener('input', () => {
+        if (!confirm.value) { fieldReset(confirm, 'signupConfirmErr'); return; }
+        confirm.value === pwd.value ? fieldOk(confirm, 'signupConfirmErr') : fieldErr(confirm, 'signupConfirmErr', 'Passwords do not match.');
+      });
+
+      form.addEventListener('submit', function (e) {
+        let ok = true;
+        if (!validateName(first.value))   { fieldErr(first,   'signupFirstErr',   'Min. 2 letters, no numbers.'); ok = false; } else fieldOk(first,   'signupFirstErr');
+        if (!validateName(last.value))    { fieldErr(last,    'signupLastErr',    'Min. 2 letters, no numbers.'); ok = false; } else fieldOk(last,    'signupLastErr');
+        if (!validateEmail(email.value))  { fieldErr(email,   'signupEmailErr',   'Please enter a valid email address.'); ok = false; } else fieldOk(email,   'signupEmailErr');
+        if (!validatePassword(pwd.value)) { fieldErr(pwd,     'signupPasswordErr','Password must be at least 8 characters.'); ok = false; } else fieldOk(pwd,     'signupPasswordErr');
+        if (confirm.value !== pwd.value)  { fieldErr(confirm, 'signupConfirmErr', 'Passwords do not match.'); ok = false; } else fieldOk(confirm, 'signupConfirmErr');
+        if (!terms.checked) {
+          document.getElementById('signupTermsErr').classList.remove('hidden');
+          ok = false;
+        } else {
+          document.getElementById('signupTermsErr').classList.add('hidden');
+        }
+
+        if (!ok) { e.preventDefault(); return; }
+        btn.disabled = true;
+        btn.innerHTML = '<span style="display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.4);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite"></span>';
+      });
+    })();
+
+    // ── Spinner keyframes (injected once) ─────────────────────────
+    const styleEl = document.createElement('style');
+    styleEl.textContent = `
+      .auth-tab.active{background:#0057FF;color:white;}
+      @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+      .auth-field{transition:border-color .18s,box-shadow .18s;}
+    `;
+    document.head.appendChild(styleEl);
   </script>
 </body>
 
