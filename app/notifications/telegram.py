@@ -16,8 +16,8 @@ def send_telegram(user_id, symbol, price, alert_type):
 
     ## FOR TESTING
     print("\n===== TELEGRAM ALERT =====")
-    print("User:", user_id)
-    print("Stock:", symbol)
-    print("Price:", price)
-    print("Type:", alert_type)
-    print("==========================\n")
+    # print("User:", user_id)
+    # print("Stock:", symbol)
+    # print("Price:", price)
+    # print("Type:", alert_type)
+    # print("==========================\n")

@@ -2,15 +2,15 @@ from app.services import token_cache
 from app.alerts.alert_queue import push_alert
 
 # FOR TESTING
-orb_levels = {
-    "2885": {
-        "high": 2500,
-        "low": 2480
-    }
-}
+# orb_levels = {
+#     "2885": {
+#         "high": 2500,
+#         "low": 2480
+#     }
+# }
 
 # ORB levels
-# orb_levels = {}
+orb_levels = {}
 
 # Trigger memory
 triggered_alerts = {}

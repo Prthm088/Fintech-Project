@@ -1,8 +1,7 @@
 from flask import request, redirect, url_for, render_template, Blueprint, session
-
 from app.models import Subscription, Stock
 from app import db
-
+from app.services.subscription_manager import refresh_subscriptions
 stock_bp = Blueprint("stock", __name__)
 
 
@@ -49,6 +48,7 @@ def stock():
                 db.session.add(sub)
 
         db.session.commit()
+        refresh_subscriptions()
 
         stocks_display = ", ".join(stock_names)
 

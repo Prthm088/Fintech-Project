@@ -122,7 +122,7 @@ def stock():
 
         db.session.commit()
 
-        # Convert list → string for success page
+        # Convert list   string for success page
         stocks_display = ", ".join(stock_names)
 
         return redirect(

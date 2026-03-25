@@ -1039,7 +1039,7 @@
               style="font-size:14px"></textarea></div>
           <button id="submitBtn"
             class="w-full py-3.5 bg-brand hover:bg-brand-dark text-white font-semibold rounded-xl transition-all"
-            style="font-size:15px;box-shadow:0 4px 16px rgba(0,87,255,.28)">Send Message →</button>
+            style="font-size:15px;box-shadow:0 4px 16px rgba(0,87,255,.28)">Send Message  </button>
         </div>
       </div>
     </div>
@@ -1423,7 +1423,7 @@
     document.getElementById('submitBtn').addEventListener('click', function (e) {
       e.preventDefault();
       this.textContent = 'Message Sent ✓'; this.style.background = '#059669'; this.style.boxShadow = 'none';
-      setTimeout(() => { this.textContent = 'Send Message →'; this.style.background = ''; this.style.boxShadow = ''; }, 3500);
+      setTimeout(() => { this.textContent = 'Send Message  '; this.style.background = ''; this.style.boxShadow = ''; }, 3500);
     });
 
     // ══ AUTH MODAL ═══════════════════════════════════════════════

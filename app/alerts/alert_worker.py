@@ -6,7 +6,7 @@ from app.notifications.telegram import send_telegram
 
 def start_worker():
 
-    print("Alert worker started")
+    # print("Alert worker started")
 
     while True:
 
