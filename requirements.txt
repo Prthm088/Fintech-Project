@@ -28,3 +28,4 @@ smartapi-python
 websocket-client
 pyotp
 logzero
+redis
