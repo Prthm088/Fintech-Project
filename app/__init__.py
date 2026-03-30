@@ -12,10 +12,12 @@ def create_app():
     db.init_app(app)
 
     from app.routes import main, auth, stock_bp, ipo_bp
+    from app.routes.telegram_routes import telegram_bp
 
     app.register_blueprint(main)
     app.register_blueprint(auth)
     app.register_blueprint(stock_bp)
     app.register_blueprint(ipo_bp)
+    app.register_blueprint(telegram_bp, url_prefix="/telegram")
 
     return app

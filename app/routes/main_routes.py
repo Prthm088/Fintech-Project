@@ -16,10 +16,11 @@ def index():
 
 
 # Success Page
-@main.route("/success/<stocks>/<alert>")
-def success(stocks, alert):
+@main.route("/success/<stocks>/<alert>/<int:user_id>")
+def success(stocks, alert, user_id):
     return render_template(
         "success.html",
         stocks=stocks,
-        alert=alert
+        alert=alert,
+        user_id=user_id  
     )

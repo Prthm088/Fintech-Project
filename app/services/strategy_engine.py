@@ -1,81 +1,52 @@
-from app.services import token_cache
+import json
+from app.services.token_redis import redis_client
 from app.alerts.alert_queue import push_alert
-
-# FOR TESTING
-# orb_levels = {
-#     "2885": {
-#         "high": 2500,
-#         "low": 2480
-#     }
-# }
-
-# ORB levels
-orb_levels = {}
-
-# Trigger memory
-triggered_alerts = {}
-
-
-def set_orb_levels(levels):
-
-    global orb_levels
-    orb_levels = levels
 
 
 def process_price_tick(token, price):
 
-    if token not in orb_levels:
+    token = str(token)
+
+    # ✅ 1. Check if token is subscribed
+    if not redis_client.sismember("subscribed_tokens", token):
         return
 
-    high = orb_levels[token]["high"]
-    low = orb_levels[token]["low"]
+    # ✅ 2. Get ORB levels from Redis
+    orb_data = redis_client.hgetall(f"orb_levels:{token}")
 
-    # initialize trigger memory
-    if token not in triggered_alerts:
-        triggered_alerts[token] = {
-            "breakout": False,
-            "breakdown": False
-        }
+    if not orb_data:
+        return
 
-    users = token_cache.token_user_map.get(token, [])
+    high = float(orb_data["high"])
+    low = float(orb_data["low"])
 
-    # BREAKOUT
-    if price > high and not triggered_alerts[token]["breakout"]:
+    # ✅ 3. Get trigger state from Redis
+    trigger_data = redis_client.hgetall(f"triggered:{token}")
 
-        triggered_alerts[token]["breakout"] = True
+    breakout_triggered = trigger_data.get("breakout") == "1"
+    breakdown_triggered = trigger_data.get("breakdown") == "1"
+
+    # 🚀 BREAKOUT
+    if price > high and not breakout_triggered:
+
+        redis_client.hset(f"triggered:{token}", "breakout", 1)
 
         print(f"BREAKOUT detected for {token} at {price}")
+        push_alert({
+            "symbol": token,
+            "price": price,
+            "type": "breakout"
+        })
 
-        users = token_cache.token_user_map.get(token, [])
-        print("USERS TO ALERT:", users)
+    # 🚀 BREAKDOWN
+    if price < low and not breakdown_triggered:
 
-        for user in users:
-
-            alert = {
-                "user_id": user["user_id"],
-                "symbol": user["symbol"],
-                "price": price,
-                "type": "breakout",
-                "method": user["method"]
-            }
-
-            print("SENDING ALERT TO QUEUE:", alert)
-
-            push_alert(alert)
-    # BREAKDOWN
-    if price < low and not triggered_alerts[token]["breakdown"]:
-
-        triggered_alerts[token]["breakdown"] = True
+        redis_client.hset(f"triggered:{token}", "breakdown", 1)
 
         print(f"BREAKDOWN detected for {token} at {price}")
-        print("Current Trigger Memory:", triggered_alerts)
-        for user in users:
 
-            push_alert({
-                "user_id": user["user_id"],
-                "symbol": user["symbol"],
-                "price": price,
-                "type": "breakdown",
-                "method": user["method"]
-            })
-
+        push_alert({
+            "symbol": token,
+            "price": price,
+            "type": "breakdown"
+        })

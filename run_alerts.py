@@ -2,10 +2,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from app import create_app
-from app.services.token_cache import load_token_user_map
+from app.services.token_redis import load_token_user_map_to_redis
 from app.services.websocket_listener import start_websocket
 from app.alerts.alert_worker import start_worker
 from app.services.token_manager import get_auth_token
+from app.services.telegram_sync import sync_telegram_to_redis
 
 import threading
 import time
@@ -14,9 +15,10 @@ app = create_app()
 
 
 def start_system():
-    with app.app_context():
+    with app.app_context(): 
         print("Loading token-user map...")
-        load_token_user_map()
+        load_token_user_map_to_redis()
+        sync_telegram_to_redis()
 
         # Critical: Ensure token exists before starting
         auth_token = get_auth_token()

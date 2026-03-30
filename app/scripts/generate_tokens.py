@@ -3,7 +3,6 @@ import os
 from SmartApi import SmartConnect
 from app.services.token_manager import save_tokens
 
-# Load env (if using dotenv)
 from dotenv import load_dotenv
 load_dotenv()
 

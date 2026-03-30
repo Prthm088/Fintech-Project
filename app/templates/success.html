@@ -158,6 +158,42 @@
                         <span class="detail-value">{{alert}}</span>
                     </div>
                 </div>
+                {% if alert == "telegram" %}
+
+<div class="mb-7 fade-up-d3" style="text-align:left; background:rgba(52,211,153,.05); border:1px solid rgba(52,211,153,.2); border-radius:14px; padding:18px">
+
+    <p style="font-size:13px; font-weight:700; color:#34D399; margin-bottom:8px">
+        🔗 Connect Telegram
+    </p>
+
+    <p style="font-size:13px; color:rgba(148,163,184,.7); line-height:1.6; margin-bottom:14px">
+        To start receiving real-time alerts:
+        <br>1. Click the button below
+        <br>2. Press <b>Start</b> inside Telegram
+    </p>
+
+    <a href="https://t.me/Fintech2025ORB_bot?start={{ user_id }}" target="_blank">
+        <button style="
+            width:100%;
+            background:#0088cc;
+            color:white;
+            padding:12px;
+            border-radius:10px;
+            font-weight:600;
+            border:none;
+            cursor:pointer;
+        ">
+            🚀 Connect Telegram
+        </button>
+    </a>
+
+    <p style="font-size:11px; color:rgba(148,163,184,.5); margin-top:10px">
+        ⚠️ You must press <b>Start</b> in Telegram to activate alerts
+    </p>
+
+</div>
+
+{% endif %}
 
                 <!-- CTA -->
                 <div class="fade-up-d3">

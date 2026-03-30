@@ -56,7 +56,8 @@ def stock():
             url_for(
                 "main.success",
                 stocks=stocks_display,
-                alert=notification_method
+                alert=notification_method,
+                user_id=session["user_id"] 
             )
         )
 
