@@ -1,11 +1,17 @@
 import json
 import redis
+import os
 from app import db
 from app.models import Subscription, Stock
 
-# Redis connection
-redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
+# Redis connection on Development Server
+# redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
 
+## Redis Connection for PROD
+redis_client = redis.from_url(
+    os.getenv("REDIS_URL"),
+    decode_responses=True
+)
 
 def load_token_user_map_to_redis():
     """
