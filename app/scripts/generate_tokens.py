@@ -9,6 +9,7 @@ load_dotenv()
 
 def generate_tokens():
     client_id = os.getenv("ANGEL_CLIENT_ID")
+    api_Key = os.getenv("ANGEL_API_KEY")
     password = os.getenv("ANGEL_PASSWORD")
     totp_secret = os.getenv("ANGEL_TOTP_SECRET")
 
@@ -17,7 +18,7 @@ def generate_tokens():
 
     try:
         # Step 2: Login
-        smart_api = SmartConnect(api_key=client_id)
+        smart_api = SmartConnect(api_key=api_Key)
 
         session = smart_api.generateSession(client_id, password, totp)
 

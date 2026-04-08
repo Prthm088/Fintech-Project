@@ -135,11 +135,18 @@ def get_orb_from_redis(token):
         "low": float(data["low"])
     }
 
+def get_tokens_from_redis():
+    keys = redis_client.keys("token_subscribers:*")
+
+    tokens = [key.split(":")[1] for key in keys]
+
+    return tokens
 
 # 🔥 TEST
 if __name__ == "__main__":
 
-    tokens = ["2885", "4963"]
+    tokens = get_tokens_from_redis()
+    print("TOKENS FROM REDIS:", tokens)
 
     levels = load_orb_levels(tokens)
 

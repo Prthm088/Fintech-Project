@@ -9,15 +9,22 @@ mode = 1
 def refresh_subscriptions():
 
     print("Refreshing subscriptions...")
+    print("Testing Redis connection...")
+    print(redis_client.ping())
 
-    # ✅ 1. Get OLD tokens (before refresh)
-    old_tokens = set(redis_client.smembers("subscribed_tokens"))
+    try:
+        old_tokens = set(redis_client.smembers("subscribed_tokens"))
+    except Exception as e:
+        print("Redis error:", e)
+        return  # 🔥 Prevent crash
 
-    # ✅ 2. Reload DB → Redis
     load_token_user_map_to_redis()
 
-    # ✅ 3. Get NEW tokens
-    current_tokens = set(redis_client.smembers("subscribed_tokens"))
+    try:
+        current_tokens = set(redis_client.smembers("subscribed_tokens"))
+    except Exception as e:
+        print("Redis error:", e)
+        return
 
     print("Updated tokens:", current_tokens)
 

@@ -7,10 +7,17 @@ from app.models import Subscription, Stock
 # Redis connection on Development Server
 # redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
 
-## Redis Connection for PROD
-redis_client = redis.from_url(
-    os.getenv("REDIS_URL"),
-    decode_responses=True
+# Redis connection on Production Server
+REDIS_URL = os.environ.get("REDIS_URL")
+
+# print("REDIS URL:", REDIS_URL)
+
+redis_client = redis.Redis.from_url(
+    REDIS_URL,
+    decode_responses=True,
+    socket_connect_timeout=5,
+    socket_timeout=5,
+    retry_on_timeout=True
 )
 
 def load_token_user_map_to_redis():
