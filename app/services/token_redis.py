@@ -49,6 +49,9 @@ def load_token_user_map_to_redis():
 
         # ✅ 2. Add token to subscribed_tokens set
         redis_client.sadd("subscribed_tokens", token)
+    
+        # 🔥 3. ADD THIS (FIX)
+        redis_client.sadd(f"token_subscribers:{token}", str(sub.user_id))
 
 
 def clear_token_data():
@@ -56,8 +59,10 @@ def clear_token_data():
     Clears old Redis token data
     """
 
-    # Get all token keys
-    keys = redis_client.keys("token_users:*")
+    keys = []
+
+    keys += redis_client.keys("token_users:*")
+    keys += redis_client.keys("token_subscribers:*")
 
     if keys:
         redis_client.delete(*keys)
